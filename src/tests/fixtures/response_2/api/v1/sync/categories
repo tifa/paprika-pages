@@ -1,0 +1,28 @@
+{
+    "result": [
+        {
+            "uid": "category-1-uid",
+            "order_flag": 0,
+            "name": "Category 1 Name",
+            "parent_uid": null
+        },
+        {
+            "uid": "category-2-uid",
+            "order_flag": 0,
+            "name": "Category 2 Name Edited",
+            "parent_uid": null
+        },
+        {
+            "uid": "category-4-uid",
+            "order_flag": 0,
+            "name": "Category 4 Name",
+            "parent_uid": null
+        },
+        {
+            "uid": "category-5-uid",
+            "order_flag": 0,
+            "name": "Category 5 Name",
+            "parent_uid": "category-2-uid"
+        }
+    ]
+}

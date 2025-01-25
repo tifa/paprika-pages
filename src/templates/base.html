@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>{{ page_title ~ ' | ' ~ response.title if page_title else response.title }}</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="author" content="Tifa">
+    <meta name="description" content="Recipe inventory">
+    <meta name="pinterest" content="nopin">
+
+    <link rel="author" href="https://tifa.dev">
+    <link rel="home" title="Home" href="">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans:ital,wght@0,400..800;1,300..800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <input type="checkbox" id="sandwich">
+    <label for="sandwich" class="sandwich">
+        <i class="fa fa-bars"></i>
+    </label>
+
+    <div id="bar">
+        <div class="wrap">
+            <header>
+                <h1>
+                    <span>
+                        <a href="/">{{ response.title }}</a>
+                    </span>
+                </h1>
+            </header>
+            <nav class="menu">
+                <ul>
+                    <li>
+                        <a href="mailto:{{ response.email }}"><i class="fa-regular fa-envelope"></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/tifa/paprika-pages"><i class="fa-brands fa-github"></i></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="subnav">
+            <ul>
+                {% for category, slug in response.categories.items() %}
+                <li>
+                    <a href="/c/{{ slug }}">{{ category }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div id="content">
+        <article>
+            {% block content %}{% endblock %}
+        </article>
+        <footer>
+            <div>
+                &copy;
+            </div>
+        </footer>
+    </div>
+
+    <div id="overlay"></div>
+
+    <script src="https://kit.fontawesome.com/604b1fd259.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="/static/js/script.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

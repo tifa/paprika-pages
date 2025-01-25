@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>{{ response.category }}</h2>
+    {% for recipe in response.recipes %}
+        <p>
+            <a href="/r/{{ recipe.slug }}/{{ recipe.hash }}">
+                <span>{{ recipe.name }}</span><br>
+                {% if recipe.photo_filename %}
+                    <img src="/static/images/{{ recipe.photo_filename }}">
+                {% endif %}
+            </a>
+        </p>
+    {% endfor %}
+{% endblock %}

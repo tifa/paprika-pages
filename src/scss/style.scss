@@ -1,0 +1,416 @@
+@use "sass:math";
+@import "_common";
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadein {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadein {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadein {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+$margin: 40px;
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+}
+
+body {
+  font: .85em/1.5em 'Open Sans', Arial, Helvetica, sans-serif;
+  color: #000;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: #fff;
+}
+
+.cover {
+  background: #000;
+}
+
+::selection,
+::-moz-selection {
+  background: #ffff00;
+  color: #333;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+strong {
+  font-weight: bold;
+}
+
+img {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+#sandwich,
+label[for='sandwich'] {
+  display: none;
+}
+
+#bar {
+  font-weight: 400;
+  background: #fff;
+  position: fixed;
+  width: 100%;
+  z-index: 3;
+  color: #000;
+
+  .subnav {
+    clear: both;
+    background: #f2f2f2;
+    width: 100%;
+    text-align: center;
+    overflow: auto;
+
+    h2 {
+      padding: 25px;
+      text-align: center;
+      font: 1.2em Raleway, Arial, Helvetica, sans-serif;
+      letter-spacing: .1em;
+      text-transform: lowercase;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    ul {
+      padding: 10px 25px;
+      list-style: none;
+    }
+
+    li {
+      text-transform: uppercase;
+      display: inline-block;
+      margin-right: 20px;
+    }
+
+    li:last-child {
+      margin-right: 0;
+    }
+
+    a:hover,
+    li.active a {
+      border-bottom: 1px solid #aaa;
+    }
+  }
+
+  .wrap {
+    width: 100%;
+    display: table;
+
+    header {
+      display: table-cell;
+      width: 25%;
+      padding-left: 25px;
+
+      h1 {
+        @include transition();
+        vertical-align: middle;
+        display: inline-block;
+        font: 2.7em/1em Lobster, Arial, Helvetica, sans-serif;
+        text-transform: lowercase;
+        margin: 25px;
+      }
+    }
+
+    nav.menu {
+      @include transition();
+      display: table-cell;
+      vertical-align: middle;
+      width: 75%;
+      text-align: right;
+      font-size: 1.2em;
+
+      ul {
+        display: inline-block;
+
+        li {
+          display: inline-block;
+          text-transform: uppercase;
+          margin-right: 20px;
+        }
+
+        li:last-child {
+          margin-right: 0;
+        }
+      }
+
+      >ul {
+        margin-right: 3em;
+
+        li ul {
+          display: none;
+        }
+
+        >li:hover {
+          position: relative;
+
+          i[class*="envelope"] {
+            color: #c71610;
+          }
+
+          i[class*="github"] {
+            color: #096bde;
+          }
+
+          ul {
+            display: block;
+            position: absolute;
+            top: 1.3em;
+            color: #fff;
+            font-size: .9em;
+            left: -50%;
+            padding-top: 10px;
+
+            li {
+              display: block;
+              margin: 0;
+
+              a {
+                display: block;
+                padding: 6px 15px;
+                background: #222;
+              }
+            }
+
+            li:first-child a {
+              padding-top: 12px;
+            }
+
+            li:last-child a {
+              padding-bottom: 12px;
+            }
+
+            li:hover a {
+              color: #ccc;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.cover {
+  #bar .wrap header h1 {
+    border-bottom: 1px solid #555;
+  }
+
+  #bar.light {
+    color: #fff;
+
+    .wrap header h1 {
+      border-bottom: 1px solid #ccc;
+    }
+  }
+}
+
+#bar.smaller .wrap {
+  h1 {
+    font-size: 1.6em;
+    margin: 15px 0;
+  }
+
+  nav {
+    font-size: 1em;
+  }
+}
+
+#content {
+  @include transition();
+  position: absolute;
+  top: 11em;
+  left: 2em;
+  right: 2em;
+  z-index: 2;
+
+  a:hover {
+    background: #ffd700;
+  }
+
+  footer div {
+    margin: 3em;
+    text-align: center;
+    color: #676767;
+  }
+}
+
+#page-nav {
+  ul {
+    text-align: center;
+  }
+
+  li {
+    display: inline-block;
+    border-radius: 50%;
+    font: 4em/1em Raleway, Arial, Helvetica, sans-serif;
+
+    a:hover {
+      background: transparent;
+      color: #aaa;
+    }
+  }
+
+  .spacing {
+    margin-right: 100px;
+  }
+}
+
+@media screen and (max-device-width: 480px) {
+  body {
+    font-size: 2.5em;
+  }
+
+  #bar .wrap nav.menu {
+    display: none;
+  }
+
+  #sandwich {
+    display: inherit;
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  label[for='sandwich'] {
+    display: inherit;
+    position: fixed;
+    right: .5em;
+    top: .5em;
+    cursor: pointer;
+    font-size: 2em;
+    z-index: 11;
+    color: #666;
+  }
+
+  #bar.smaller .wrap {
+    h1 {
+      font-size: 2.7em;
+      margin: 25px 0;
+    }
+
+    nav {
+      font-size: inherit;
+    }
+  }
+
+  #sandwich:checked~#bar {
+    height: 100%;
+    display: table;
+    background: #222;
+
+    .wrap {
+
+      >*,
+      > :last-child {
+        width: auto;
+        padding: 0;
+        text-align: center;
+      }
+
+      display: table-cell;
+      vertical-align: middle;
+
+      header {
+        display: none;
+      }
+
+      nav {
+        display: block;
+        width: 100%;
+
+        ul {
+          margin-right: auto;
+          font-size: 1.5em;
+          color: #fff;
+          display: block;
+
+          li,
+          li:last-child {
+            display: block;
+            margin: 1.5em;
+
+            ul {
+              display: none;
+            }
+          }
+        }
+
+        .menu {
+          margin: 0;
+
+          i {
+            color: #888;
+          }
+        }
+      }
+    }
+  }
+
+  .cover #sandwich:checked~#bar {
+    mix-blend-mode: normal;
+  }
+}
+
+@import "_links";
+
+@import "_overlay";
+
+@import "_gallery";
+@import "_recipe";

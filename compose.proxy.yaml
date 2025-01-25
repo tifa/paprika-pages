@@ -1,0 +1,15 @@
+---
+networks:
+  service:
+    external: true
+
+services:
+  app:
+    labels:
+      traefik.enable: true
+      traefik.http.routers.salt.rule: Host(`${PROJECT_HOSTNAME:?}`)
+      traefik.http.routers.salt.entrypoints: websecure
+      traefik.http.routers.salt.tls.certresolver: ${CERT_RESOLVER:?}
+      traefik.http.services.salt.loadbalancer.server.port: 8000
+    networks:
+      - service

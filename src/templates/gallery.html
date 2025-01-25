@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script src="/static/js/masonry.pkgd.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var elem = document.querySelector('#gallery');
+        var msnry = new Masonry(elem, {
+            itemSelector: '.card',
+            columnWidth: '.card',
+            gutter: 10,
+            fitWidth: true,
+            columnWidth: 200,
+        });
+    });
+</script>
+{% endblock %}
+
+
+{% block content %}
+<ul id="gallery">
+    {% for recipe in response.recipes %}
+    <li class="card{% if recipe.secret %} secret{% endif %}">
+        {% if not recipe.secret %}
+        <a href="/r/{{ recipe.slug }}/{{ recipe.hash }}">
+        {% endif %}
+            <div class="photo">
+                {% if recipe.photo_filename %}
+                <img src="/static/images/{{ recipe.photo_filename }}">
+                {% else %}
+                <i class="fa-solid fa-utensils"></i>
+                {% endif %}
+            </div>
+            <h3>{{ recipe.name }}{% if recipe.secret %} <i class="fa-solid fa-lock"></i>{% endif %}</h3>
+            <p class="rating">
+                {% if recipe.rating >= 0 %}
+                    {% for i in range(5) %}
+                        {% if i < recipe.rating %}
+                            <i class="filled fa-solid fa-star"></i>
+                        {% else %}
+                            <i class="empty fa-solid fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </p>
+            <p class="categories">
+                {{ recipe.categories_list }}
+            </p>
+        {% if not recipe.secret %}
+        </a>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
