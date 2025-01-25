@@ -1,0 +1,28 @@
+{
+    "result": [
+        {
+            "uid": "photo-1-uid",
+            "filename": "photo-1-uid.png",
+            "recipe_uid": "recipe-2-uid",
+            "order_flag": 1,
+            "name": "1",
+            "hash": "photo-1-hash"
+        },
+        {
+            "uid": "photo-2-uid",
+            "filename": "photo-2-uid.png",
+            "recipe_uid": "recipe-2-uid",
+            "order_flag": 2,
+            "name": "2",
+            "hash": "photo-2-hash-edited"
+        },
+        {
+            "uid": "photo-4-uid",
+            "filename": "photo-4-uid.png",
+            "recipe_uid": "recipe-2-uid",
+            "order_flag": 4,
+            "name": "4",
+            "hash": "photo-4-hash"
+        }
+    ]
+}

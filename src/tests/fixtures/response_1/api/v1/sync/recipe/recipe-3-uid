@@ -1,0 +1,32 @@
+{
+    "result": {
+        "uid": "recipe-3-uid",
+        "name": "Recipe 3 Name",
+        "ingredients": "Recipe 3 ingredients",
+        "directions": "Recipe 3 description",
+        "description": "Recipe 3 description",
+        "notes": "Recipe 3 notes",
+        "nutritional_info": "Recipe 3 calories",
+        "servings": "Recipe 3 servings",
+        "difficulty": "Recipe 3 difficulty",
+        "prep_time": "Recipe 3 prep time",
+        "cook_time": "Recipe 3 cook time",
+        "total_time": "Recipe 3 total time",
+        "source": "Recipe 3 source",
+        "source_url": "https://example.net/recipe-3-source-url",
+        "image_url": null,
+        "photo": "recipe-3-photo.png",
+        "photo_hash": "recipe-3-photo-hash",
+        "photo_large": "recipe-3-photo-large.png",
+        "scale": "Recipe 3 scale",
+        "hash": "recipe-3-hash",
+        "categories": [],
+        "rating": 0,
+        "in_trash": false,
+        "is_pinned": false,
+        "on_favorites": false,
+        "on_grocery_list": false,
+        "created": "2000-01-01 00:00:00",
+        "photo_url": "src/tests/fixtures/photos/photo-3-cover.png"
+    }
+}

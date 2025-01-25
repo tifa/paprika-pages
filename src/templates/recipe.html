@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="recipe">
+    <h2>{{ response.recipe.name }}</h2>
+    <div class="subtitle">
+        Created on <span class="date">{{ response.recipe.created }}</span>
+        {% if response.recipe.created != response.recipe.time_updated %}
+        | Updated on <span class="date">{{ response.recipe.time_updated }}</span>
+        {% endif %}
+    </div>
+    <div class="columns">
+        <div class="sidebar left">
+            {% if response.recipe.photo_filename %}
+            <p>
+                <img src="/static/images/{{ response.recipe.photo_filename }}" alt="{{ response.recipe.name }}">
+            </p>
+            {% endif %}
+            {% if response.recipe.ingredients %}
+            <h3>Ingredients</h3>
+            <div>
+                {{ response.recipe.ingredients|safe }}
+            </div>
+            {% endif %}
+
+            {% if response.recipe.nutritional_info %}
+            <h3>Nutritional Info</h3>
+            <div>
+                {{ response.recipe.nutritional_info|safe }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="content">
+            {% if response.recipe.description %}
+            <h3>Description</h3>
+            <div>
+                {{ response.recipe.description|safe }}
+            </div>
+            {% endif %}
+
+            {% if response.recipe.directions %}
+            <h3>Directions</h3>
+            <div>
+                {{ response.recipe.directions|safe }}
+            </div>
+            {% endif %}
+
+            {% if response.recipe.notes %}
+            <h3>Notes</h3>
+            <div>
+                {{ response.recipe.notes|safe }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="sidebar right">
+            {% if response.recipe.categories_list %}
+            <h3>Categories</h3>
+            <ul>
+                {% for category in response.recipe.categories_list %}
+                <li><a href="/c/{{ category.slug }}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <h3>Info</h3>
+            {% if response.recipe.rating %}
+            <p><strong>Rating:</strong> {{ response.recipe.rating }}</p>
+            {% endif %}
+            {% if response.recipe.servings %}
+            <p><strong>Servings:</strong> {{ response.recipe.servings }}</p>
+            {% endif %}
+            {% if response.recipe.difficulty %}
+            <p><strong>Difficulty:</strong> {{ response.recipe.difficulty }}</p>
+            {% endif %}
+            {% if response.recipe.prep_time %}
+            <p><strong>Prep Time:</strong> {{ response.recipe.prep_time }}</p>
+            {% endif %}
+            {% if response.recipe.cook_time %}
+            <p><strong>Cook Time:</strong> {{ response.recipe.cook_time }}</p>
+            {% endif %}
+            {% if response.recipe.total_time %}
+            <p><strong>Total Time:</strong> {{ response.recipe.total_time }}</p>
+            {% endif %}
+            {% if response.recipe.source_url %}
+            <p>
+                <strong>Source URL:</strong>
+                <a href="{{ response.recipe.source_url }}">
+                    {% if response.recipe.source %}
+                    {{ response.recipe.source }}
+                    {% else %}
+                    {{ response.recipe.source_domain_name }}
+                    {% endif %}
+                </a>
+            </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

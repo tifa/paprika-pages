@@ -1,0 +1,13 @@
+.DS_Store
+.coverage
+
+build
+
+__pycache__/
+
+venv/
+.env
+.python-version
+
+config.toml
+scratch/

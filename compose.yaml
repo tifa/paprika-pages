@@ -1,0 +1,8 @@
+---
+services:
+  app:
+    hostname: ${PROJECT_HOSTNAME:?}
+    image: salt
+    volumes:
+      - .:/app
+    restart: always

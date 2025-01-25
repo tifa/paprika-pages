@@ -1,0 +1,58 @@
+#links {
+  text-align: center;
+  max-width: 33em;
+  margin: 0 auto;
+
+  ul {
+    list-style-type: none;
+    margin: 3em;
+
+    a {
+      margin: 1.5em;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1em;
+      text-transform: uppercase;
+      font-size: 1.2em;
+      border-radius: 1em;
+      position: relative;
+      display: block;
+
+      i {
+        position: absolute;
+        left: 1em;
+        font-size: 1.2em;
+      }
+    }
+
+    a:hover {
+      background: rgb(241, 241, 241);
+
+      i {
+        text-shadow: 1px 1px 3px #ccc;
+      }
+
+      i[class*="palette"] {
+        color: #f00;
+      }
+
+      i[class*="instagram"] {
+        color: #bc2a8d;
+      }
+
+      i[class*="twitter"] {
+        color: #1da1f2;
+      }
+
+      i[class*="spotify"] {
+        color: #1db954;
+      }
+    }
+  }
+}
+
+@media screen and (max-device-width: 480px) {
+  #links ul a {
+    font-size: 1em;
+  }
+}

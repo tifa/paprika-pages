@@ -1,0 +1,45 @@
+# --------------------------------------------------
+# Display configuration
+title = "Paprika Pages"
+email = "email@example.com"
+
+
+# --------------------------------------------------
+# SQLite
+[sqlite]
+db = "file"  # memory or file
+
+
+# --------------------------------------------------
+# Redis
+[redis]
+host = "redis.example.local"
+
+[redis.options]
+db = 0
+
+
+# --------------------------------------------------
+# Paprika
+[paprika]
+
+client = "api"  # mock or api
+
+# Force a delay between API requests to avoid being rate-limited
+api_delay = 1  # seconds
+
+# TODO: Move these to a secrets manager
+email = "email@example.com"
+password = "password"
+
+# Listed categories; if not empty, hidden_categories will be ignored
+listed_categories = []
+
+# Listed but recipes are locked from viewing
+secret_categories = ["Secret"]
+
+# Hidden recipes
+hidden_categories = ["Hidden"]
+
+# Show uncategorized recipes
+show_uncategorized = true

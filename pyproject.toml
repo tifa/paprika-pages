@@ -1,0 +1,23 @@
+[tool.coverage.run]
+omit = ["*/tests/*"]
+
+[tool.pytest.ini_options]
+addopts = "-vvv --cov=src --cov-report=term-missing"
+markers = [
+    "integration: mark a test as an integration test",
+]
+
+[tool.mypy]
+exclude = "venv/"
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 80
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "I",  # isort
+    "F",  # flake8
+    "E",  # pycodestyle
+]

@@ -1,0 +1,16 @@
+{
+    "result": [
+        {
+            "uid": "recipe-1-uid",
+            "hash": "recipe-1-hash"
+        },
+        {
+            "uid": "recipe-2-uid",
+            "hash": "recipe-2-hash"
+        },
+        {
+            "uid": "recipe-3-uid",
+            "hash": "recipe-3-hash"
+        }
+    ]
+}
