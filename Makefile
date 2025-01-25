@@ -10,9 +10,6 @@ FORMAT_UNDERLINE = \e[4m
 include .env
 
 COMPOSE = CERT_RESOLVER=$(CERT_RESOLVER) docker compose -f compose.yaml
-ifeq (${USE_PROXY},true)
-  COMPOSE += -f compose.proxy.yaml
-endif
 
 define usage
 	@printf "Usage: make target\n\n"
