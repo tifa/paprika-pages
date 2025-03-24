@@ -37,7 +37,7 @@ help: Makefile  # Print this message
 
 .PHONY: build
 build: venv  # Build image
-	@docker build . -t salt
+	@docker build . -t paprika-pages
 	@touch $@
 
 .PHONY: start

@@ -11,15 +11,6 @@ db = "file"  # memory or file
 
 
 # --------------------------------------------------
-# Redis
-[redis]
-host = "redis.example.local"
-
-[redis.options]
-db = 0
-
-
-# --------------------------------------------------
 # Paprika
 [paprika]
 

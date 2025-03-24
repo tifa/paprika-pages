@@ -5,10 +5,13 @@ ENV PYTHONPATH=/app \
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        nodejs npm \
+        logrotate nodejs npm \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./assets/.bashrc /root/.bashrc
+COPY ./assets/entrypoint.sh /opt/entrypoint.sh
+COPY ./assets/logrotate /etc/logrotate.d/app
+
 WORKDIR /app
 
 RUN pip install uv
