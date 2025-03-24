@@ -63,7 +63,7 @@ def base():
 
 @app.get("/robots.txt", response_class=PlainTextResponse)
 async def robots(request: Request):
-    return "User-agent: *\nDisallow: /private/\n"
+    return "User-agent: *\nDisallow: /\n"
 
 
 @app.get("/r/{slug}", response_class=HTMLResponse)
