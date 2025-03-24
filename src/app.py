@@ -5,6 +5,7 @@ from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from peewee import fn
@@ -60,7 +61,12 @@ def base():
     }
 
 
-@app.get("/r/{slug}")
+@app.get("/robots.txt", response_class=PlainTextResponse)
+async def robots(request: Request):
+    return "User-agent: *\nDisallow: /private/\n"
+
+
+@app.get("/r/{slug}", response_class=HTMLResponse)
 async def recipe(request: Request, slug: str):
     response = base()
     try:
@@ -93,8 +99,8 @@ async def recipe(request: Request, slug: str):
     )
 
 
-@app.get("/")
-@app.get("/c/{slug}")
+@app.get("/", response_class=HTMLResponse)
+@app.get("/c/{slug}", response_class=HTMLResponse)
 async def index(request: Request, slug: str | None = None):
     recipes = (
         Recipe.select()
