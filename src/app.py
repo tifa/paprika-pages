@@ -7,12 +7,11 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from huey import RedisHuey
 from peewee import fn
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.config import MAINTENANCE_FILE, STATIC_DIR, Config, Environment
-from src.database import initialize_db, redis_pool
+from src.database import initialize_db
 from src.paprika import Category, CategoryRecipe, Recipe, RecipeStatus
 from src.render import markdown
 
@@ -35,8 +34,6 @@ app = FastAPI()
 app.add_middleware(MaintenanceMiddleware)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=_BASE_DIR / "templates")
-
-huey = RedisHuey(Config.project_name, connection_pool=redis_pool())
 
 
 def base():

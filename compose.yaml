@@ -2,7 +2,9 @@
 services:
   app:
     hostname: ${PROJECT_HOSTNAME:?}
-    image: salt
+    build:
+      context: .
+    image: paprika-pages
     ports:
       - ${PROJECT_PORT:?}:8000
     volumes:
