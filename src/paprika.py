@@ -301,7 +301,10 @@ class PaprikaAPIClient(PaprikaClient):
         response = self.connection.getresponse().read()
         result = json.loads(response)
 
-        if "error" in result and "not found" in result["error"].lower():
+        if (
+            "error" in result
+            and "not found" in result["error"]["message"].lower()
+        ):
             raise DoesNotExistError("Record not found")
         elif "result" in result:
             result = result["result"]
