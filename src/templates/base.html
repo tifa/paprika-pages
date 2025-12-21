@@ -2,6 +2,14 @@
 <html>
 
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2M09Q54RPJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-2M09Q54RPJ');
+    </script>
+
     <title>{{ page_title ~ ' | ' ~ response.title if page_title else response.title }}</title>
 
     <meta charset="utf-8">
@@ -9,6 +17,7 @@
     <meta name="description" content="Recipe inventory">
     <meta name="pinterest" content="nopin">
 
+    <link rel="author" href="https://tifa.dev">
     <link rel="home" title="Home" href="/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

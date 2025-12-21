@@ -9,7 +9,10 @@ FORMAT_UNDERLINE = \e[4m
 
 include .env
 
-COMPOSE = docker compose -f compose.yaml
+COMPOSE += docker compose -f compose.yaml
+ifeq ($(USE_PROXY),true)
+  COMPOSE += -f compose.proxy.yaml --env-file .env
+endif
 
 define usage
 	@printf "Usage: make target\n\n"
