@@ -246,7 +246,8 @@ def sync_recipe(uid: str, force: bool = False, **kwargs):
             paprika_parsed_url = urlparse(paprika_recipe.photo_url)
             db_parsed_url = urlparse(db_recipe.photo_url)
             if (
-                Path(paprika_parsed_url.path).name
+                paprika_parsed_url.path
+                and Path(paprika_parsed_url.path).name
                 != Path(db_parsed_url.path).name
             ):
                 with PaprikaClient.get() as client:

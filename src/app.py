@@ -14,7 +14,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from src.config import MAINTENANCE_FILE, STATIC_DIR, Config, Environment
 from src.database import initialize_db, redis_pool
 from src.paprika import Category, CategoryRecipe, Recipe, RecipeStatus
-from src.render import markdown
+from src.render import ingredients, markdown
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.DEBUG)
@@ -77,15 +77,23 @@ async def recipe(request: Request, slug: str):
         else:
             recipe = recipe[0]
 
-        recipe.created = recipe.created.strftime("%B %d, %Y")
-        recipe.time_updated = recipe.time_updated.strftime("%B %d, %Y")
+        recipe.created = recipe.created.strftime("%B %-d, %Y")
+        recipe.time_updated = recipe.time_updated.strftime("%B %-d, %Y")
         response["recipe"] = recipe
         for attribute in Recipe.markdown_fields:
-            setattr(
-                recipe,
-                attribute,
-                markdown(recipe.uid, getattr(recipe, attribute)),
-            )
+            content = getattr(recipe, attribute)
+            if attribute == "ingredients":
+                setattr(
+                    recipe,
+                    attribute,
+                    ingredients(recipe.uid, content),
+                )
+            else:
+                setattr(
+                    recipe,
+                    attribute,
+                    markdown(recipe.uid, content),
+                )
     except Recipe.DoesNotExist:
         return templates.TemplateResponse(
             "404.html", {"request": request, "response": response}

@@ -54,7 +54,7 @@ $margin: 40px;
 }
 
 body {
-  font: .85em/1.5em 'Open Sans', Arial, Helvetica, sans-serif;
+  font: 1em/1.5em 'Open Sans', Arial, Helvetica, sans-serif;
   color: #000;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
@@ -112,44 +112,6 @@ label[for='sandwich'] {
   width: 100%;
   z-index: 3;
   color: #000;
-
-  .subnav {
-    clear: both;
-    background: #f2f2f2;
-    width: 100%;
-    text-align: center;
-    overflow: auto;
-
-    h2 {
-      padding: 25px;
-      text-align: center;
-      font: 1.2em Raleway, Arial, Helvetica, sans-serif;
-      letter-spacing: .1em;
-      text-transform: lowercase;
-      font-style: italic;
-      font-weight: bold;
-    }
-
-    ul {
-      padding: 10px 25px;
-      list-style: none;
-    }
-
-    li {
-      text-transform: uppercase;
-      display: inline-block;
-      margin-right: 20px;
-    }
-
-    li:last-child {
-      margin-right: 0;
-    }
-
-    a:hover,
-    li.active a {
-      border-bottom: 1px solid #aaa;
-    }
-  }
 
   .wrap {
     width: 100%;
@@ -276,7 +238,7 @@ label[for='sandwich'] {
 #content {
   @include transition();
   position: absolute;
-  top: 11em;
+  top: 7em;
   left: 2em;
   right: 2em;
   z-index: 2;

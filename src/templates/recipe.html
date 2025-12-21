@@ -2,95 +2,133 @@
 
 {% block content %}
 <div id="recipe">
-    <h2>{{ response.recipe.name }}</h2>
-    <div class="subtitle">
-        Created on <span class="date">{{ response.recipe.created }}</span>
-        {% if response.recipe.created != response.recipe.time_updated %}
-        | Updated on <span class="date">{{ response.recipe.time_updated }}</span>
-        {% endif %}
-    </div>
-    <div class="columns">
-        <div class="sidebar left">
-            {% if response.recipe.photo_filename %}
-            <p>
-                <img src="/static/images/{{ response.recipe.photo_filename }}" alt="{{ response.recipe.name }}">
-            </p>
+    <div class="heading">
+        <h2>{{ response.recipe.name }}</h2>
+        <div class="subtitle">
+            Created on <span class="date">{{ response.recipe.created }}</span>
+            {% if response.recipe.created != response.recipe.time_updated %}
+            | Updated on <span class="date">{{ response.recipe.time_updated }}</span>
             {% endif %}
-            {% if response.recipe.ingredients %}
-            <h3>Ingredients</h3>
+        </div>
+    </div>
+    {% if response.recipe.prep_time or response.recipe.cook_time or response.recipe.total_time or response.recipe.servings or response.recipe.rating or response.recipe.difficulty %}
+    <div class="metadata">
+        <dl>
+            {% if response.recipe.prep_time %}
             <div>
-                {{ response.recipe.ingredients|safe }}
+                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                <div>
+                    <dt>Prep Time</dt>
+                    <dd>{{ response.recipe.prep_time }}</dd>
+                </div>
             </div>
             {% endif %}
-
-            {% if response.recipe.nutritional_info %}
-            <h3>Nutritional Info</h3>
+            {% if response.recipe.cook_time %}
             <div>
-                {{ response.recipe.nutritional_info|safe }}
+                <i class="fa fa-fire" aria-hidden="true"></i>
+                <div>
+                    <dt>Cook Time</dt>
+                    <dd>{{ response.recipe.cook_time }}</dd>
+                </div>
+            </div>
+            {% endif %}
+            {% if response.recipe.total_time %}
+            <div>
+                <i class="fa fa-hourglass-half" aria-hidden="true"></i>
+                <div>
+                    <dt>Total Time</dt>
+                    <dd>{{ response.recipe.total_time }}</dd>
+                </div>
+            </div>
+            {% endif %}
+            {% if response.recipe.servings %}
+            <div>
+                <i class="fa fa-cutlery" aria-hidden="true"></i>
+                <div>
+                    <dt>Servings</dt>
+                    <dd>{{ response.recipe.servings }}</dd>
+                </div>
+            </div>
+            {% endif %}
+            {% if response.recipe.rating %}
+            <div>
+                <i class="fa fa-award" aria-hidden="true"></i>
+                <div>
+                    <dt>Rating</dt>
+                    <dd>{{ response.recipe.rating }}</dd>
+                </div>
+            </div>
+            {% endif %}
+            {% if response.recipe.difficulty %}
+            <div>
+                <i class="fa fa-tachometer" aria-hidden="true"></i>
+                <div>
+                    <dt>Difficulty</dt>
+                    <dd>{{ response.recipe.difficulty }}</dd>
+                </div>
+            </div>
+            {% endif %}
+        </dl>
+    </div>
+    {% endif %}
+    <div class="columns">
+        <div class="sidebar">
+            {% if response.recipe.photo_filename %}
+            <img src="/static/images/{{ response.recipe.photo_filename }}" alt="{{ response.recipe.name }}">
+            {% endif %}
+            {% if response.recipe.ingredients %}
+            <div class="section ingredients">
+                <h3>Ingredients</h3>
+                <div>
+                    {{ response.recipe.ingredients|safe }}
+                </div>
             </div>
             {% endif %}
         </div>
         <div class="content">
-            {% if response.recipe.description %}
-            <h3>Description</h3>
-            <div>
-                {{ response.recipe.description|safe }}
+            <!--
+            {% if response.recipe.categories_list %}
+            <div class="categories">
+                <i class="fa fa-tags" aria-hidden="true"></i>
+                <ul>
+                    {% for category in response.recipe.categories_list %}
+                    <li><a href="/c/{{ category.slug }}">{{ category.name }}</a></li>
+                    {% endfor %}
+                </ul>
             </div>
             {% endif %}
+            -->
+
+            <!-- <div class="description">
+                <i class="fa fa-quote-left" aria-hidden="true"> </i>
+                <div>
+                    This is a test description. {{ response.recipe.description|safe }}
+                </div>
+            </div> -->
 
             {% if response.recipe.directions %}
-            <h3>Directions</h3>
-            <div>
+            <div class="section">
+                <h3>Directions</h3>
                 {{ response.recipe.directions|safe }}
             </div>
             {% endif %}
 
-            {% if response.recipe.notes %}
-            <h3>Notes</h3>
-            <div>
-                {{ response.recipe.notes|safe }}
+            {% if response.recipe.nutritional_info %}
+            <div class="section">
+                <h3>Nutritional Info</h3>
+                <div>
+                    {{ response.recipe.nutritional_info|safe }}
+                </div>
             </div>
             {% endif %}
-        </div>
-        <div class="sidebar right">
-            {% if response.recipe.categories_list %}
-            <h3>Categories</h3>
-            <ul>
-                {% for category in response.recipe.categories_list %}
-                <li><a href="/c/{{ category.slug }}">{{ category.name }}</a></li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            <h3>Info</h3>
-            {% if response.recipe.rating %}
-            <p><strong>Rating:</strong> {{ response.recipe.rating }}</p>
-            {% endif %}
-            {% if response.recipe.servings %}
-            <p><strong>Servings:</strong> {{ response.recipe.servings }}</p>
-            {% endif %}
-            {% if response.recipe.difficulty %}
-            <p><strong>Difficulty:</strong> {{ response.recipe.difficulty }}</p>
-            {% endif %}
-            {% if response.recipe.prep_time %}
-            <p><strong>Prep Time:</strong> {{ response.recipe.prep_time }}</p>
-            {% endif %}
-            {% if response.recipe.cook_time %}
-            <p><strong>Cook Time:</strong> {{ response.recipe.cook_time }}</p>
-            {% endif %}
-            {% if response.recipe.total_time %}
-            <p><strong>Total Time:</strong> {{ response.recipe.total_time }}</p>
-            {% endif %}
-            {% if response.recipe.source_url %}
-            <p>
-                <strong>Source URL:</strong>
-                <a href="{{ response.recipe.source_url }}">
-                    {% if response.recipe.source %}
-                    {{ response.recipe.source }}
-                    {% else %}
-                    {{ response.recipe.source_domain_name }}
-                    {% endif %}
-                </a>
-            </p>
+
+            {% if response.recipe.notes %}
+            <div class="section">
+                <h3>Notes</h3>
+                <div>
+                    {{ response.recipe.notes|safe }}
+                </div>
+            </div>
             {% endif %}
         </div>
     </div>

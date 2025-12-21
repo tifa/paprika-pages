@@ -2,6 +2,8 @@
 services:
   app:
     hostname: ${PROJECT_HOSTNAME:?}
+    build:
+      context: .
     image: salt
     ports:
       - ${PROJECT_PORT:?}:8000

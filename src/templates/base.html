@@ -38,6 +38,16 @@
             <nav class="menu">
                 <ul>
                     <li>
+                        <a href="#"><i class="fa fa-bars"></i></a>
+                        <ul>
+                            {% for category, slug in response.categories.items() %}
+                            <li>
+                                <a href="/c/{{ slug }}">{{ category }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li>
                         <a href="mailto:{{ response.email }}"><i class="fa-regular fa-envelope"></i></a>
                     </li>
                     <li>
@@ -45,15 +55,6 @@
                     </li>
                 </ul>
             </nav>
-        </div>
-        <div class="subnav">
-            <ul>
-                {% for category, slug in response.categories.items() %}
-                <li>
-                    <a href="/c/{{ slug }}">{{ category }}</a>
-                </li>
-                {% endfor %}
-            </ul>
         </div>
     </div>
 

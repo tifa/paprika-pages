@@ -35,11 +35,6 @@ help: Makefile  # Print this message
 ## Development
 # --------------------------------------------
 
-.PHONY: build
-build: venv  # Build image
-	@docker build . -t salt
-	@touch $@
-
 .PHONY: start
 start: venv  ## Start the app
 	@$(COMPOSE) up -d --build

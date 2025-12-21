@@ -1,7 +1,8 @@
 $(document).ready(function () {
-    const HEADER_PADDING = 20;
+    // ----------------------------------------------
+    // header shrink effect
+
     const header = document.querySelector("#bar");
-    const content = document.querySelector("#content");
     let resizeTimer;
 
     function resize() {
@@ -14,20 +15,27 @@ $(document).ready(function () {
         }
     }
 
-    function updateContentPosition() {
-        content.style.top = (header.offsetHeight + HEADER_PADDING) + "px";
-    }
-
-    header.addEventListener("transitionend", updateContentPosition);
-
     window.addEventListener("resize", () => {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            updateContentPosition();
-        }, 100);
     });
 
     window.addEventListener("scroll", resize);
     resize();
-    updateContentPosition();
+
+    // ----------------------------------------------
+    // ingredient click to strike-through
+    $("#recipe .ingredients li").css("cursor", "pointer");
+    $("#recipe .ingredients li").click(function () {
+        if ($(this).css("text-decoration") === "line-through") {
+            $(this).css({
+                "text-decoration": "none",
+                "opacity": "1",
+            });
+        } else {
+            $(this).css({
+                "text-decoration": "line-through",
+                "opacity": "0.5",
+            });
+        }
+    });
 });

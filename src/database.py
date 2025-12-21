@@ -1,10 +1,11 @@
 from datetime import datetime
 from pathlib import Path, PosixPath
+from typing import Any
 
 import redis
 from peewee import DateTimeField, Model, Proxy, SqliteDatabase
 
-from src.config import Config, SQLiteDB
+from src.config import Config, Environment, SQLiteDB
 from src.util import get_all_subclasses
 
 _BASE_DIR: PosixPath = Path(__file__).parent
@@ -64,5 +65,11 @@ def redis_pool() -> redis.ConnectionPool:
     return _REDIS
 
 
-def redis_client() -> None:
+def redis_client() -> Any:
+    if not Config.redis.host:
+        if Config.environment != Environment.LOCAL:
+            raise RuntimeError("Redis host is not configured")
+        import fakeredis
+
+        return fakeredis.FakeStrictRedis(server_type="redis")
     return redis.Redis(connection_pool=redis_pool())
