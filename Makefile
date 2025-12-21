@@ -9,7 +9,7 @@ FORMAT_UNDERLINE = \e[4m
 
 include .env
 
-COMPOSE = CERT_RESOLVER=$(CERT_RESOLVER) docker compose -f compose.yaml
+COMPOSE = docker compose -f compose.yaml
 
 define usage
 	@printf "Usage: make target\n\n"

@@ -4,7 +4,7 @@ services:
     hostname: ${PROJECT_HOSTNAME:?}
     build:
       context: .
-    image: salt
+    image: paprika-pages
     ports:
       - ${PROJECT_PORT:?}:8000
     volumes:
