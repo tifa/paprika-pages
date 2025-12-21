@@ -1,6 +1,6 @@
 # paprika-pages 🌶️
 
-Sync from an app-only [Paprika] account to create a shareable website.
+Sync from an app-only [Paprika Recipe Manager 3] account to create a shareable website.
 
 [![Screenshot](docs/screenshot.png)][demo]
 
@@ -43,4 +43,4 @@ make up
 
 <!-- Links -->
 [demo]: https://salt.tifa.dev
-[Paprika]: https://www.paprikaapp.com
+[Paprika Recipe Manager 3]: https://www.paprikaapp.com

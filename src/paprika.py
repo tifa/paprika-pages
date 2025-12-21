@@ -25,7 +25,8 @@ from peewee import (
 from slugify import slugify
 
 from src.config import Config, Environment, PaprikaClientType
-from src.database import BaseModel, redis_client
+from src.database import BaseModel
+from src.util import cache_client
 
 _BASE_DIR = Path(__file__).parent
 _IMAGE_DIR = _BASE_DIR / "static" / "images"
@@ -177,6 +178,7 @@ class PaprikaClient:
     _recipes: list[Recipe] | None = None
     _photos: list[Photo] | None = None
     _use_cache: bool = True
+    _cache_lock_key: str = "paprika_cache_lock"
 
     def __init__(self, use_cache: bool = True):
         self._use_cache = use_cache
@@ -273,7 +275,7 @@ class PaprikaMockClient(PaprikaClient):
 class PaprikaAPIClient(PaprikaClient):
     _conn: HTTPSConnection | None = None
     _base_url: str = "www.paprikaapp.com"
-    _request_lock_key: str = "request_lock"
+    _request_lock_key: str = "paprika_request_lock"
 
     @cached_property
     def _headers(self):
@@ -293,9 +295,9 @@ class PaprikaAPIClient(PaprikaClient):
             self.connection.close()
 
     def _request(self, method, endpoint) -> dict:
-        redis = redis_client()
-        while redis.get(self._request_lock_key):
-            time.sleep(1)
+        lock = cache_client()
+        while lock.get(key=self._request_lock_key):
+            time.sleep(Config.paprika.api_delay / 2)
 
         self.connection.request(method, endpoint, headers=self._headers)
         response = self.connection.getresponse().read()
@@ -311,7 +313,9 @@ class PaprikaAPIClient(PaprikaClient):
         else:
             raise ClientError("Error retrieving data from Paprika")
 
-        redis.setex(self._request_lock_key, Config.paprika.api_delay, "1")
+        lock.setex(
+            key=self._request_lock_key, ttl=Config.paprika.api_delay, value=True
+        )
 
         return result
 

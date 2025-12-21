@@ -1,18 +1,15 @@
 from datetime import datetime
 from pathlib import Path, PosixPath
-from typing import Any
 
-import redis
 from peewee import DateTimeField, Model, Proxy, SqliteDatabase
 
-from src.config import Config, Environment, SQLiteDB
+from src.config import Config, SQLiteDB
 from src.util import get_all_subclasses
 
 _BASE_DIR: PosixPath = Path(__file__).parent
 
 _SQLITE: SqliteDatabase | None = None
 _SQLITE_FILE_PATH: PosixPath = _BASE_DIR.parent / "data" / "sqlite.db"
-_REDIS: redis.Redis | None = None
 
 _INITIALIZED_DB: bool = False
 
@@ -54,22 +51,3 @@ def initialize_db(force: bool = False) -> None:
     models = get_all_subclasses(BaseModel)
     _SQLITE.create_tables(models)
     _INITIALIZED_DB = True
-
-
-def redis_pool() -> redis.ConnectionPool:
-    global _REDIS
-    if not _REDIS:
-        _REDIS = redis.ConnectionPool(
-            host=Config.redis.host, **Config.redis.options
-        )
-    return _REDIS
-
-
-def redis_client() -> Any:
-    if not Config.redis.host:
-        if Config.environment != Environment.LOCAL:
-            raise RuntimeError("Redis host is not configured")
-        import fakeredis
-
-        return fakeredis.FakeStrictRedis(server_type="redis")
-    return redis.Redis(connection_pool=redis_pool())

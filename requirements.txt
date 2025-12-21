@@ -6,6 +6,5 @@ jinja2
 markdown
 peewee
 python-slugify
-redis
 requests
 uvicorn

@@ -1,0 +1,10 @@
+/var/log/app.log
+/var/log/huey.log {
+    size 512k
+    daily
+    rotate 1
+    compress
+    missingok
+    notifempty
+    copytruncate
+}

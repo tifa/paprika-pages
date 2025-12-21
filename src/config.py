@@ -39,8 +39,6 @@ Config = Dynaconf(
     validators=[
         Validator("title", must_exist=True, is_type_of=str),
         Validator("sqlite.db", must_exist=True, is_in=SQLiteDB),
-        Validator("redis.host", must_exist=True, is_type_of=str),
-        Validator("redis.options", is_type_of=dict, default={}),
         Validator("paprika.client", must_exist=True, is_in=PaprikaClientType),
         Validator("paprika.api_delay", is_type_of=int, default=1),
         Validator("paprika.email", must_exist=True, is_type_of=str),

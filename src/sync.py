@@ -48,10 +48,10 @@ from typing import NamedTuple
 from urllib.parse import urlparse
 
 from docopt import docopt
-from huey import crontab
+from huey import SqliteHuey, crontab
 from peewee import IntegrityError
 
-from src.app import huey
+from src.config import Config
 from src.database import initialize_db
 from src.paprika import (
     Category,
@@ -68,6 +68,12 @@ logger.setLevel(logging.DEBUG)
 __doc__ %= {
     "script_name": Path(__file__).name,
 }
+
+_BASE_DIR = Path(__file__).parent
+
+huey = SqliteHuey(
+    Config.project_name, filename=_BASE_DIR.parent / "data" / "huey.db"
+)
 
 
 class Stats(NamedTuple):
@@ -110,8 +116,14 @@ def sync_photo(uid: str, force: bool = False, **kwargs) -> Stats:
     added, updated = 0, 0
     if db_photo:
         if paprika_photo.hash != db_photo.hash or force:
-            paprika_parsed_url = urlparse(paprika_photo.photo_url)
-            db_parsed_url = urlparse(db_photo.photo_url)
+            paprika_parsed_url = (
+                urlparse(paprika_photo.photo_url)
+                if paprika_photo.photo_url
+                else ""
+            )
+            db_parsed_url = (
+                urlparse(db_photo.photo_url) if db_photo.photo_url else ""
+            )
             if (
                 Path(paprika_parsed_url.path).name
                 != Path(db_parsed_url.path).name
@@ -243,8 +255,14 @@ def sync_recipe(uid: str, force: bool = False, **kwargs):
 
     if db_recipe:
         if paprika_recipe.hash != db_recipe.hash or force:
-            paprika_parsed_url = urlparse(paprika_recipe.photo_url)
-            db_parsed_url = urlparse(db_recipe.photo_url)
+            paprika_parsed_url = (
+                urlparse(paprika_recipe.photo_url)
+                if paprika_recipe.photo_url
+                else ""
+            )
+            db_parsed_url = (
+                urlparse(db_recipe.photo_url) if db_recipe.photo_url else ""
+            )
             if (
                 paprika_parsed_url.path
                 and Path(paprika_parsed_url.path).name
@@ -331,7 +349,7 @@ def sync_all(force: bool = False, limit: int | None = None):
     sync_recipes(force=force, limit=limit)
 
 
-@huey.task(crontab(minute="0"))
+@huey.periodic_task(crontab(minute="0"))
 def schedule_sync():
     sync_all()
 
