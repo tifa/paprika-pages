@@ -9,4 +9,5 @@ services:
       - ${PROJECT_PORT:?}:8000
     volumes:
       - .:/app
+      - ./data/log:/var/log
     restart: always

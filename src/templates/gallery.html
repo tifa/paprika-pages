@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block styles %}
+<link rel="stylesheet" href="/static/css/gallery.css">
+{% endblock %}
+
 {% block scripts %}
 <script src="/static/js/masonry.pkgd.min.js"></script>
 <script>
@@ -16,6 +20,15 @@
 </script>
 {% endblock %}
 
+{% block subnav %}
+    <ul>
+        {% for category, slug in response.categories.items() %}
+        <li>
+            <a href="/c/{{ slug }}">{{ category }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
 
 {% block content %}
 <ul id="gallery">
