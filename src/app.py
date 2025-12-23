@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import logging
 import os
+from datetime import timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import uvicorn
 from fastapi import FastAPI, Request
@@ -80,8 +82,16 @@ async def recipe(request: Request, slug: str):
         else:
             recipe = recipe[0]
 
-        recipe.created = recipe.created.strftime("%B %-d, %Y")
-        recipe.time_updated = recipe.time_updated.strftime("%B %-d, %Y")
+        zone_info = ZoneInfo(Config.paprika.timezone)
+
+        utc_time_created = recipe.created.replace(tzinfo=timezone.utc)
+        local_time_created = utc_time_created.astimezone(zone_info)
+        recipe.created = local_time_created.strftime("%B %-d, %Y")
+
+        utc_time_updated = recipe.time_updated.replace(tzinfo=timezone.utc)
+        local_time_updated = utc_time_updated.astimezone(zone_info)
+        recipe.time_updated = local_time_updated.strftime("%B %-d, %Y")
+
         response["recipe"] = recipe
         for attribute in Recipe.markdown_fields:
             content = getattr(recipe, attribute)

@@ -54,7 +54,7 @@ $margin: 40px;
 }
 
 body {
-  font: 1em/1.5em 'Open Sans', Arial, Helvetica, sans-serif;
+  font: .9em/1.5em 'Open Sans', Arial, Helvetica, sans-serif;
   color: #000;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
@@ -178,12 +178,13 @@ label[for='sandwich'] {
             top: 1.3em;
             color: #fff;
             font-size: .9em;
-            left: -50%;
+            left: -300%;
             padding-top: 10px;
 
             li {
               display: block;
               margin: 0;
+              text-align: center;
 
               a {
                 display: block;
