@@ -16,6 +16,10 @@ db = "file"  # memory or file
 
 client = "api"  # mock or api
 
+# Timezone of the device where the data in Paprika was created (Paprika does
+# not explicitly return timezone info)
+timezone = "America/New_York"
+
 # Force a delay between API requests to avoid being rate-limited
 api_delay = 1  # seconds
 

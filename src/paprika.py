@@ -5,12 +5,14 @@ import os
 import shutil
 import time
 from base64 import b64encode
+from datetime import datetime
 from enum import StrEnum
 from functools import cached_property
 from http.client import HTTPSConnection
 from pathlib import Path
 from typing import Self
 from urllib.parse import urlparse
+from zoneinfo import ZoneInfo
 
 import requests
 from peewee import (
@@ -116,6 +118,19 @@ class Recipe(BaseModel):
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+    @classmethod
+    def from_api(cls, data: dict) -> Self:
+        created_str = data.get("created")
+        if created_str:
+            date_format = "%Y-%m-%d %H:%M:%S"
+            naive_date = datetime.strptime(created_str, date_format)
+            tz = ZoneInfo(Config.paprika.timezone)
+            local_date = naive_date.replace(tzinfo=tz)
+            utc_date = local_date.astimezone(ZoneInfo("UTC"))
+            utc_date_str = utc_date.strftime(date_format)
+            data["created"] = utc_date_str
+        return cls(**data)
+
     @property
     def trashed(self) -> bool:
         return bool(self.in_trash)
@@ -205,12 +220,12 @@ class PaprikaClient:
     def get_recipes(self) -> list[Recipe]:
         if not self._use_cache or self._recipes is None:
             recipes = self._request("GET", "/api/v1/sync/recipes")
-            self.recipes = [Recipe(**recipe) for recipe in recipes]
+            self.recipes = [Recipe.from_api(recipe) for recipe in recipes]
         return self.recipes
 
     def get_recipe(self, uid: str) -> Recipe:
         recipe = self._request("GET", f"/api/v1/sync/recipe/{uid}")
-        return Recipe(**recipe)
+        return Recipe.from_api(recipe)
 
     def get_photos(self) -> list[Photo]:
         if not self._use_cache or self._photos is None:
@@ -321,6 +336,8 @@ class PaprikaAPIClient(PaprikaClient):
 
     def delete_photo(self, path: str) -> None:
         parsed_url = urlparse(path)
+        if not parsed_url.path:
+            return
         dest = _IMAGE_DIR / Path(parsed_url.path).name
         if dest.exists():
             dest.unlink()

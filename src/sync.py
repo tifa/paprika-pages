@@ -125,7 +125,8 @@ def sync_photo(uid: str, force: bool = False, **kwargs) -> Stats:
                 urlparse(db_photo.photo_url) if db_photo.photo_url else ""
             )
             if (
-                Path(paprika_parsed_url.path).name
+                paprika_parsed_url.path
+                and Path(paprika_parsed_url.path).name
                 != Path(db_parsed_url.path).name
             ):
                 with PaprikaClient.get() as client:
@@ -255,14 +256,8 @@ def sync_recipe(uid: str, force: bool = False, **kwargs):
 
     if db_recipe:
         if paprika_recipe.hash != db_recipe.hash or force:
-            paprika_parsed_url = (
-                urlparse(paprika_recipe.photo_url)
-                if paprika_recipe.photo_url
-                else ""
-            )
-            db_parsed_url = (
-                urlparse(db_recipe.photo_url) if db_recipe.photo_url else ""
-            )
+            paprika_parsed_url = urlparse(paprika_recipe.photo_url or "")
+            db_parsed_url = urlparse(db_recipe.photo_url or "")
             if (
                 paprika_parsed_url.path
                 and Path(paprika_parsed_url.path).name

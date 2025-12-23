@@ -23,8 +23,7 @@ endef
 .git/hooks/pre-commit:
 	@test -d .git && $(ACTIVATE) pre-commit install && touch $@ || true
 
-venv: venv/.touchfile .git/hooks/pre-commit
-venv/.touchfile: requirements-dev.txt requirements.txt
+venv: .git/hooks/pre-commit requirements-dev.txt requirements.txt
 	@test -d venv || python3 -m venv venv
 	@$(ACTIVATE) pip install uv
 	@$(ACTIVATE) uv pip install -Ur requirements-dev.txt
