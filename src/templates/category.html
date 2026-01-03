@@ -6,8 +6,8 @@
         <p>
             <a href="/r/{{ recipe.slug }}/{{ recipe.hash }}">
                 <span>{{ recipe.name }}</span><br>
-                {% if recipe.photo_filename %}
-                    <img src="/static/images/{{ recipe.photo_filename }}">
+                {% if recipe.photo_large %}
+                    <img src="/static/images/{{ recipe.photo_large }}">
                 {% endif %}
             </a>
         </p>

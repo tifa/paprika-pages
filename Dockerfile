@@ -5,7 +5,7 @@ ENV PYTHONPATH=/app \
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        logrotate nodejs npm \
+        logrotate nodejs npm zip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./assets/.bashrc /root/.bashrc

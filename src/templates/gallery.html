@@ -22,6 +22,7 @@
 
 {% block subnav %}
     <ul>
+        <li><a href="/">All</a></li>
         {% for category, slug in response.categories.items() %}
         <li>
             <a href="/c/{{ slug }}">{{ category }}</a>
@@ -38,8 +39,8 @@
         <a href="/r/{{ recipe.slug }}/{{ recipe.hash }}">
         {% endif %}
             <div class="photo">
-                {% if recipe.photo_filename %}
-                <img src="/static/images/{{ recipe.photo_filename }}">
+                {% if recipe.photo_large %}
+                <img src="/static/images/{{ recipe.photo_large }}">
                 {% else %}
                 <i class="fa-solid fa-utensils"></i>
                 {% endif %}

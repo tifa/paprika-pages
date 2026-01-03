@@ -68,3 +68,7 @@ down:  ## Exit maintenance mode
 .PHONY: purge
 purge:  ## Purge all data
 	@rm -rf ./data/sqlite.db ./src/static/images/*.*
+
+.PHONY: backup
+backup:  ## Create a backup
+	@$(COMPOSE) exec app zip -r backup-`date +%Y%m%d-%H%M%S`.zip data/ src/
