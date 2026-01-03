@@ -16,6 +16,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="description" content="Recipe inventory">
     <meta name="pinterest" content="nopin">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="author" href="https://tifa.dev">
     <link rel="home" title="Home" href="/">
@@ -49,6 +50,7 @@
                     <li>
                         <a href="#"><i class="fa fa-bars"></i></a>
                         <ul>
+                            <li><a href="/">All</a></li>
                             {% for category, slug in response.categories.items() %}
                             <li>
                                 <a href="/c/{{ slug }}">{{ category }}</a>

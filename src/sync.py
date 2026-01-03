@@ -159,8 +159,21 @@ def sync_photos(
     else:
         logger.debug("Syncing Photo records")
 
+    recipes = []
     with PaprikaClient.get() as client:
         paprika_photos = client.get_photos()
+        for uid in recipe_uid:
+            try:
+                recipe = client.get_recipe(uid)
+            except DoesNotExistError:
+                continue
+            recipes.append(recipe)
+
+    recipe_photo_large_uids = {
+        recipe.photo_large.split(".")[0]
+        for recipe in recipes
+        if recipe.photo_large
+    }
 
     db_photos = Photo.select()
     if recipe_uid:
@@ -175,8 +188,10 @@ def sync_photos(
 
     stats = Stats()
 
-    uids_to_delete = set(db_photo_uids_to_hash.keys()) - set(
-        paprika_photo_uids_to_hash.keys()
+    uids_to_delete = (
+        set(db_photo_uids_to_hash.keys())
+        - set(paprika_photo_uids_to_hash.keys())
+        - recipe_photo_large_uids
     )
     for uid in uids_to_delete:
         stats += sync_photo(uid=uid)
@@ -195,8 +210,8 @@ def sync_category_recipes(recipe_uid: str, category_uids: list[str]) -> None:
     num_deleted = (
         CategoryRecipe.delete()
         .where(
-            CategoryRecipe.recipe
-            == recipe_uid & ~CategoryRecipe.category.in_(category_uids)
+            (CategoryRecipe.recipe == recipe_uid)
+            & ~CategoryRecipe.category.in_(category_uids)
         )
         .execute()
     )
@@ -223,7 +238,6 @@ def sync_category_recipes(recipe_uid: str, category_uids: list[str]) -> None:
                 if "FOREIGN KEY constraint failed" in str(sys.exc_info()[1]):
                     category = Category.get_or_none(uid=category_uid)
                     if not category:
-                        # From recipe: 3019849D-8296-46EE-B3FC-1D8DE548BC4E
                         logger.warning(f"Unknown category: {category_uid}")
                         continue
                 raise
@@ -250,21 +264,11 @@ def sync_recipe(uid: str, force: bool = False, **kwargs):
             deleted += 1
         return
 
-    if paprika_recipe.photo_url:
-        with PaprikaClient.get() as client:
-            client.save_photo(paprika_recipe.photo_url)
-
     if db_recipe:
         if paprika_recipe.hash != db_recipe.hash or force:
-            paprika_parsed_url = urlparse(paprika_recipe.photo_url or "")
-            db_parsed_url = urlparse(db_recipe.photo_url or "")
-            if (
-                paprika_parsed_url.path
-                and Path(paprika_parsed_url.path).name
-                != Path(db_parsed_url.path).name
-            ):
-                with PaprikaClient.get() as client:
-                    client.delete_photo(db_recipe.photo_url)
+            with PaprikaClient.get() as client:
+                # TODO: remove this when all photos are using the larger size
+                client.delete_photo(db_recipe.photo_url)
             db_recipe.update_from_dict(**(paprika_recipe.__data__ | kwargs))
             db_recipe.save()
             logger.debug(f"Updated Recipe record: {db_recipe.name}")

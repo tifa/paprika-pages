@@ -88,9 +88,12 @@ async def recipe(request: Request, slug: str):
         local_time_created = utc_time_created.astimezone(zone_info)
         recipe.created = local_time_created.strftime("%B %-d, %Y")
 
-        utc_time_updated = recipe.time_updated.replace(tzinfo=timezone.utc)
-        local_time_updated = utc_time_updated.astimezone(zone_info)
-        recipe.time_updated = local_time_updated.strftime("%B %-d, %Y")
+        if recipe.time_updated is None:
+            recipe.time_updated = recipe.created
+        else:
+            utc_time_updated = recipe.time_updated.replace(tzinfo=timezone.utc)
+            local_time_updated = utc_time_updated.astimezone(zone_info)
+            recipe.time_updated = local_time_updated.strftime("%B %-d, %Y")
 
         response["recipe"] = recipe
         for attribute in Recipe.markdown_fields:
@@ -123,7 +126,11 @@ async def index(request: Request, slug: str | None = None):
     recipes = (
         Recipe.select()
         .where(Recipe.in_trash == 0)
-        .order_by(Recipe.time_updated.desc())
+        .order_by(
+            fn.MAX(
+                fn.COALESCE(Recipe.time_updated, Recipe.created), Recipe.created
+            ).desc()
+        )
     )
 
     if slug:
@@ -163,7 +170,7 @@ async def index(request: Request, slug: str | None = None):
                 "name": recipe.name,
                 "slug": recipe.slug,
                 "rating": recipe.rating,
-                "photo_filename": recipe.photo_filename,
+                "photo_large": recipe.photo_large,
                 "secret": recipe.status == RecipeStatus.SECRET,
             }
         )

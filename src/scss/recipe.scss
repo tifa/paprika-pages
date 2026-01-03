@@ -2,7 +2,7 @@
     .heading {
         padding-bottom: 2em;
         text-align: center;
-        border-bottom: 1px solid #bcbcbc;
+        border-bottom: 2px solid #eee;
         h2 {
             margin: 0 1em .7em;
             font-size: 2.5em;
@@ -18,7 +18,7 @@
     .metadata {
         font-size: .8em;
         padding: 2em;
-        border-bottom: 1px solid #bcbcbc;
+        border-bottom: 2px solid #eee;
         text-align: center;
         i {
             font-size: 2.5em;
@@ -55,7 +55,7 @@
                 left: 0;
                 bottom: -.4em;
                 width: 100%;
-                background: #ededed;
+                background: #eee;
                 height: 1em;
                 z-index: -1;
             }
@@ -64,10 +64,25 @@
         .sidebar {
             width: 250px;
             flex-shrink: 0;
-            img {
-                max-width: 100%;
-                margin-bottom: 1em;
+            .thumbnail {
                 border-radius: 5px;
+                background: #eee;
+                overflow: hidden;
+                width: 100%;
+                display: block;
+                margin-bottom: 2em;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                img {
+                    max-width: 100%;
+                }
+                i {
+                    color: #fff;
+                    font-size: 3em;
+                    height: 150px;
+                    line-height: 150px;
+                }
             }
             h3 {
                 font-size: 1.5em;
@@ -92,6 +107,9 @@
                         text-align: right;
                         flex-shrink: 0;
                     }
+                }
+                li:last-child {
+                    border-bottom: none;
                 }
                 li:not(:has(span))::before {
                     font-size: 1.5em;

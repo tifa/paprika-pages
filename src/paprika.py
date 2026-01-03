@@ -1,7 +1,6 @@
 import hashlib
 import json
 import logging
-import os
 import shutil
 import time
 from base64 import b64encode
@@ -134,11 +133,6 @@ class Recipe(BaseModel):
     @property
     def trashed(self) -> bool:
         return bool(self.in_trash)
-
-    @property
-    def photo_filename(self) -> str:
-        parsed_url = urlparse(self.photo_url)
-        return os.path.basename(parsed_url.path)
 
     @property
     def source_domain_name(self) -> str | None:

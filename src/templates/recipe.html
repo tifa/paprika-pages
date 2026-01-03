@@ -77,9 +77,13 @@
     {% endif %}
     <div class="columns">
         <div class="sidebar">
-            {% if response.recipe.photo_filename %}
-            <img src="/static/images/{{ response.recipe.photo_filename }}" alt="{{ response.recipe.name }}">
-            {% endif %}
+            <div class="thumbnail">
+                {% if response.recipe.photo_large %}
+                <img src="/static/images/{{ response.recipe.photo_large }}" alt="{{ response.recipe.name }}">
+                {% else %}
+                <i class="fa-solid fa-utensils" aria-hidden="true"></i>
+                {% endif %}
+            </div>
             {% if response.recipe.ingredients %}
             <div class="section ingredients">
                 <h3>Ingredients</h3>
