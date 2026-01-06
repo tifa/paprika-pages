@@ -52,7 +52,6 @@ from huey import SqliteHuey, crontab
 from peewee import IntegrityError
 
 from src.config import Config
-from src.database import initialize_db
 from src.paprika import (
     Category,
     CategoryRecipe,
@@ -348,7 +347,18 @@ def sync_all(force: bool = False, limit: int | None = None):
     sync_recipes(force=force, limit=limit)
 
 
-@huey.periodic_task(crontab(minute="0"))
+def crontab_from_config(cron: str) -> crontab:
+    minute, hour, day, month, day_of_week = cron.strip().split()
+    return crontab(
+        minute=minute,
+        hour=hour,
+        day=day,
+        month=month,
+        day_of_week=day_of_week,
+    )
+
+
+@huey.periodic_task(crontab_from_config(Config.paprika.cron))
 def schedule_sync():
     sync_all()
 
@@ -383,5 +393,4 @@ def main(argv: list[str] | None = None):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.ERROR)
-    initialize_db()
     main()

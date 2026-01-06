@@ -16,6 +16,9 @@ db = "file"  # memory or file
 
 client = "api"  # mock or api
 
+# Cron schedule for syncing with Paprika
+cron = "0 * * * *"
+
 # Timezone of the device where the data in Paprika was created (Paprika does
 # not explicitly return timezone info)
 timezone = "America/New_York"

@@ -13,7 +13,15 @@ _SQLITE_FILE_PATH: PosixPath = _BASE_DIR.parent / "data" / "sqlite.db"
 
 _INITIALIZED_DB: bool = False
 
-db_proxy: Proxy = Proxy()
+
+class LazyProxy(Proxy):
+    def __getattr__(self, attr):
+        if self.obj is None:
+            initialize_db(force=True)
+        return super().__getattr__(attr)
+
+
+db_proxy: Proxy = LazyProxy()
 
 
 class BaseModel(Model):
