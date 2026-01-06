@@ -52,7 +52,6 @@ from huey import SqliteHuey, crontab
 from peewee import IntegrityError
 
 from src.config import Config
-from src.database import initialize_db
 from src.paprika import (
     Category,
     CategoryRecipe,
@@ -383,5 +382,4 @@ def main(argv: list[str] | None = None):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.ERROR)
-    initialize_db()
     main()
