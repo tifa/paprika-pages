@@ -46,6 +46,7 @@ Config = Dynaconf(
         Validator("paprika.secret_categories", is_type_of=list),
         Validator("paprika.hidden_categories", is_type_of=list),
         Validator("paprika.show_uncategorized", is_type_of=bool, default=True),
+        Validator("paprika.cron", is_type_of=str, default="0 * * * *"),
     ],
 )
 
