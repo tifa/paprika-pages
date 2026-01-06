@@ -93,7 +93,11 @@ async def recipe(request: Request, slug: str):
         else:
             utc_time_updated = recipe.time_updated.replace(tzinfo=timezone.utc)
             local_time_updated = utc_time_updated.astimezone(zone_info)
-            recipe.time_updated = local_time_updated.strftime("%B %-d, %Y")
+            if local_time_updated < local_time_created:
+                # address timezone adjustment due to travel or daylight savings
+                recipe.time_updated = recipe.created
+            else:
+                recipe.time_updated = local_time_updated.strftime("%B %-d, %Y")
 
         response["recipe"] = recipe
         for attribute in Recipe.markdown_fields:
