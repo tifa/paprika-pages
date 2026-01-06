@@ -161,6 +161,7 @@ async def index(request: Request, slug: str | None = None):
         recipes = recipes.having(fn.Count(Recipe.uid) == 1)
 
     response = base()
+    response["current_category_slug"] = slug
     response["recipes"] = []
     for recipe in recipes:
         if recipe.status not in [RecipeStatus.LISTED, RecipeStatus.SECRET]:

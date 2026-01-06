@@ -22,9 +22,9 @@
 
 {% block subnav %}
     <ul>
-        <li><a href="/">All</a></li>
+        <li class="{% if response.current_category_slug is none %}active{% endif %}"><a href="/">All</a></li>
         {% for category, slug in response.categories.items() %}
-        <li>
+        <li class="{% if response.current_category_slug == slug %}active{% endif %}">
             <a href="/c/{{ slug }}">{{ category }}</a>
         </li>
         {% endfor %}
