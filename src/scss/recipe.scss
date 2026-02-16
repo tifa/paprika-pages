@@ -3,32 +3,39 @@
         padding-bottom: 2em;
         text-align: center;
         border-bottom: 2px solid #eee;
+
         h2 {
             margin: 0 1em .7em;
             font-size: 2.5em;
             text-transform: uppercase;
         }
+
         .subtitle {
             font-size: .9em;
+
             .date {
                 font-weight: bold;
             }
         }
     }
+
     .metadata {
         font-size: .8em;
         padding: 2em;
         border-bottom: 2px solid #eee;
         text-align: center;
+
         i {
             font-size: 2.5em;
             display: inline-block;
             color: #a4a4a4;
         }
+
         div {
             text-align: left;
             display: inline-block;
             margin: 0 1em;
+
             dt {
                 font-weight: bold;
                 font-size: .9em;
@@ -49,6 +56,7 @@
                 font: 2em Lobster;
                 margin-bottom: 1em;
             }
+
             h3::after {
                 content: "";
                 position: absolute;
@@ -64,6 +72,7 @@
         .sidebar {
             width: 250px;
             flex-shrink: 0;
+
             .thumbnail {
                 border-radius: 5px;
                 background: #eee;
@@ -74,9 +83,11 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+
                 img {
                     max-width: 100%;
                 }
+
                 i {
                     color: #fff;
                     font-size: 3em;
@@ -84,22 +95,27 @@
                     line-height: 150px;
                 }
             }
+
             h3 {
                 font-size: 1.5em;
             }
+
             p {
                 text-transform: uppercase;
                 margin-bottom: 1em;
             }
+
             ul {
                 list-style: none;
                 margin-bottom: 1.5em;
+
                 li {
                     padding: .5em;
                     border-bottom: 1px dashed #e4e4e4;
                     display: flex;
                     align-items: flex-start;
                     gap: 0.75em;
+
                     span {
                         font-size: 1.5em;
                         color: #6f6f6f;
@@ -108,9 +124,11 @@
                         flex-shrink: 0;
                     }
                 }
+
                 li:last-child {
                     border-bottom: none;
                 }
+
                 li:not(:has(span))::before {
                     font-size: 1.5em;
                     content: " ";
@@ -124,15 +142,19 @@
             flex-grow: 1;
             margin-left: 40px;
             line-height: 2em;
+
             .categories {
                 font-size: .9em;
+
                 i {
                     margin-right: .5em;
                 }
+
                 ul {
                     display: inline-block;
                     margin-bottom: 1em;
                 }
+
                 li {
                     display: inline-block;
                     margin-right: .5em;
@@ -140,6 +162,7 @@
                     flex-shrink: 0;
                 }
             }
+
             .description {
                 background-color: #e4e4e4;
                 font-style: italic;
@@ -149,24 +172,57 @@
                 display: flex;
                 align-items: flex-start;
                 gap: 0.75em;
+
                 i {
                     flex-shrink: 0;
                     color: #6f6f6f;
                     font-size: 2em;
                 }
             }
+
             img {
                 max-width: 250px;
                 margin-right: 1em;
                 border-radius: 5px;
             }
+
             .section {
                 p {
                     margin-bottom: 20px;
                 }
+
                 li {
                     margin: 0 2em;
                 }
+            }
+        }
+    }
+}
+
+@media print {
+    #bar {
+        display: none;
+    }
+
+    #content{
+        top: 3em;
+    }
+
+    #recipe {
+        .heading {
+            h2 {
+                font-size: 2em;
+            }
+        }
+
+        .columns {
+            .sidebar {
+                width: 200px;
+                line-height: 1em;
+            }
+
+            .content img {
+                max-height: 100px;
             }
         }
     }
