@@ -79,7 +79,7 @@
         <div class="sidebar">
             <div class="thumbnail">
                 {% if response.recipe.photo_large %}
-                <img src="/static/images/{{ response.recipe.photo_large }}" alt="{{ response.recipe.name }}">
+                <img src="/static/images/{{ response.recipe.photo_large }}" alt="{{ response.recipe.name }}" class="lightbox-trigger" style="cursor: pointer;">
                 {% else %}
                 <i class="fa-solid fa-utensils" aria-hidden="true"></i>
                 {% endif %}
@@ -94,26 +94,6 @@
             {% endif %}
         </div>
         <div class="content">
-            <!--
-            {% if response.recipe.categories_list %}
-            <div class="categories">
-                <i class="fa fa-tags" aria-hidden="true"></i>
-                <ul>
-                    {% for category in response.recipe.categories_list %}
-                    <li><a href="/c/{{ category.slug }}">{{ category.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-            -->
-
-            <!-- <div class="description">
-                <i class="fa fa-quote-left" aria-hidden="true"> </i>
-                <div>
-                    This is a test description. {{ response.recipe.description|safe }}
-                </div>
-            </div> -->
-
             {% if response.recipe.directions %}
             <div class="section">
                 <h3>Directions</h3>
