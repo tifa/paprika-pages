@@ -9,12 +9,21 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var elem = document.querySelector('#gallery');
-        var msnry = new Masonry(elem, {
+        var masonryOptions = {
             itemSelector: '.card',
             columnWidth: '.card',
             gutter: 10,
             fitWidth: true,
             columnWidth: 200,
+        };
+        var msnry = new Masonry(elem, masonryOptions);
+
+        // disable when printing
+        window.addEventListener('beforeprint', function() {
+            msnry.destroy();
+        });
+        window.addEventListener('afterprint', function() {
+            msnry = new Masonry(elem, masonryOptions);
         });
     });
 </script>

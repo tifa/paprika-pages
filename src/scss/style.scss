@@ -283,6 +283,7 @@ label[for='sandwich'] {
       font-size: 2em !important;
       line-height: 1.2em;
     }
+
     .columns {
       display: block !important;
 
@@ -300,105 +301,20 @@ label[for='sandwich'] {
       }
     }
   }
-
-  // body {
-  //   font-size: 2.5em;
-  // }
-
-  // body {
-  //   font-size: 2.5em;
-  // }
-
-  // #bar .wrap nav.menu {
-  //   display: none;
-  // }
-
-  // #sandwich {
-  //   display: inherit;
-  //   position: absolute;
-  //   clip: rect(0, 0, 0, 0);
-  // }
-
-  // label[for='sandwich'] {
-  //   display: inherit;
-  //   position: fixed;
-  //   right: .5em;
-  //   top: .5em;
-  //   cursor: pointer;
-  //   font-size: 2em;
-  //   z-index: 11;
-  //   color: #666;
-  // }
-
-  // #bar.smaller .wrap {
-  //   h1 {
-  //     font-size: 2.7em;
-  //     margin: 25px 0;
-  //   }
-
-  //   nav {
-  //     font-size: inherit;
-  //   }
-  // }
-
-  // #sandwich:checked~#bar {
-  //   height: 100%;
-  //   display: table;
-  //   background: #222;
-
-  //   .wrap {
-
-  //     >*,
-  //     > :last-child {
-  //       width: auto;
-  //       padding: 0;
-  //       text-align: center;
-  //     }
-
-  //     display: table-cell;
-  //     vertical-align: middle;
-
-  //     header {
-  //       display: none;
-  //     }
-
-  //     nav {
-  //       display: block;
-  //       width: 100%;
-
-  //       ul {
-  //         margin-right: auto;
-  //         font-size: 1.5em;
-  //         color: #fff;
-  //         display: block;
-
-  //         li,
-  //         li:last-child {
-  //           display: block;
-  //           margin: 1.5em;
-
-  //           ul {
-  //             display: none;
-  //           }
-  //         }
-  //       }
-
-  //       .menu {
-  //         margin: 0;
-
-  //         i {
-  //           color: #888;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // .cover #sandwich:checked~#bar {
-  //   mix-blend-mode: normal;
-  // }
 }
 
 @import "_links";
 
 @import "_overlay";
+
+@media print {
+  #bar .wrap {
+    header h1 {
+      font-size: 1.5em;
+    }
+
+    nav.menu {
+      display: none !important;
+    }
+  }
+}

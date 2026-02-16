@@ -104,3 +104,32 @@
         }
     }
 }
+
+@media print {
+    #gallery {
+        display: block !important;
+
+        .card {
+            display: inline-block !important;
+            position: static !important;
+            page-break-inside: avoid;
+            width: 120px !important;
+            height: 150px !important;
+            margin: 5px;
+
+            .photo {
+                width: 120px !important;
+                height: 90px !important;
+
+                img {
+                    max-width: 120px !important;
+                    max-height: 90px !important;
+                }
+            }
+
+            h3 {
+                font-size: 0.8em;
+            }
+        }
+    }
+}
