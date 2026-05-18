@@ -5,7 +5,6 @@ import shutil
 import time
 from datetime import datetime
 from enum import StrEnum
-from http.client import HTTPSConnection
 from pathlib import Path
 from typing import Self
 from urllib.parse import urljoin, urlparse
@@ -21,7 +20,9 @@ from peewee import (
     IntegerField,
     TextField,
 )
+from requests.adapters import HTTPAdapter
 from slugify import slugify
+from urllib3.util.retry import Retry
 
 from src.config import Config, Environment, PaprikaClientType
 from src.database import BaseModel
@@ -280,22 +281,22 @@ class PaprikaMockClient(PaprikaClient):
 
 
 class PaprikaAPIClient(PaprikaClient):
-    _conn: HTTPSConnection | None = None
-    _base_url: str = "www.paprikaapp.com"
+    session: requests.Session | None = None
+    _base_url: str = "https://www.paprikaapp.com"
     _request_lock_key: str = "paprika_request_lock"
     _token_cache_key: str = "paprika_token"
     _token_ttl: int = 3600
     _login_endpoint: str = "/api/v1/account/login/"
-    _login_timeout: int = 60
+    _timeout: int = 60
 
     def _fetch_token(self) -> str:
         email = Config.paprika.email
         password = Config.paprika.password
-        response = requests.post(
-            urljoin(f"https://{self._base_url}", self._login_endpoint),
+        response = self.session.post(
+            urljoin(self._base_url, self._login_endpoint),
             auth=(email, password),
             data={"email": email, "password": password},
-            timeout=self._login_timeout,
+            timeout=self._timeout,
         )
         payload = response.json()
         token = payload.get("result", {}).get("token")
@@ -318,23 +319,34 @@ class PaprikaAPIClient(PaprikaClient):
         return {"Authorization": f"Bearer {self._get_token(force_refresh)}"}
 
     def __enter__(self):
-        self.connection = HTTPSConnection(self._base_url)
+        self.session = requests.Session()
+        retry = Retry(
+            total=3,
+            backoff_factor=0.5,
+            status_forcelist=[502, 503, 504],
+            allowed_methods=["GET", "POST"],
+        )
+        self.session.mount("https://", HTTPAdapter(max_retries=retry))
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if self.connection:
-            self.connection.close()
+        if self.session:
+            self.session.close()
 
     def _send(self, method, endpoint) -> dict:
-        self.connection.request(method, endpoint, headers=self._auth_headers())
-        result = json.loads(self.connection.getresponse().read())
+        url = urljoin(self._base_url, endpoint)
+        response = self.session.request(
+            method, url, headers=self._auth_headers(), timeout=self._timeout
+        )
+        result = response.json()
         if "error" in result:
-            self.connection.request(
+            response = self.session.request(
                 method,
-                endpoint,
+                url,
                 headers=self._auth_headers(force_refresh=True),
+                timeout=self._timeout,
             )
-            result = json.loads(self.connection.getresponse().read())
+            result = response.json()
         return result
 
     def _request(self, method, endpoint) -> dict:
