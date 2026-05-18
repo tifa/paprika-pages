@@ -402,9 +402,6 @@ def test_sync_recipes(recipes):
         _IMAGE_DIR / "photo-1.png",
         _IMAGE_DIR / "photo-2.png",
         _IMAGE_DIR / "photo-3.png",
-        _IMAGE_DIR / "photo-1-cover.png",
-        _IMAGE_DIR / "photo-2-cover.png",
-        _IMAGE_DIR / "photo-3-cover.png",
     } == set(_IMAGE_DIR.iterdir())
 
     with (
@@ -419,9 +416,6 @@ def test_sync_recipes(recipes):
         _IMAGE_DIR / "photo-1.png",
         _IMAGE_DIR / "photo-2-edited.png",
         _IMAGE_DIR / "photo-4.png",
-        _IMAGE_DIR / "photo-1-cover.png",
-        _IMAGE_DIR / "photo-2-cover-edited.png",
-        _IMAGE_DIR / "photo-4-cover.png",
     } == set(_IMAGE_DIR.iterdir())
 
 
