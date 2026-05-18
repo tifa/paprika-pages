@@ -3,14 +3,12 @@ import json
 import logging
 import shutil
 import time
-from base64 import b64encode
 from datetime import datetime
 from enum import StrEnum
-from functools import cached_property
 from http.client import HTTPSConnection
 from pathlib import Path
 from typing import Self
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 from zoneinfo import ZoneInfo
 
 import requests
@@ -213,26 +211,26 @@ class PaprikaClient:
 
     def get_recipes(self) -> list[Recipe]:
         if not self._use_cache or self._recipes is None:
-            recipes = self._request("GET", "/api/v1/sync/recipes")
+            recipes = self._request("GET", "/api/v2/sync/recipes/")
             self.recipes = [Recipe.from_api(recipe) for recipe in recipes]
         return self.recipes
 
     def get_recipe(self, uid: str) -> Recipe:
-        recipe = self._request("GET", f"/api/v1/sync/recipe/{uid}")
+        recipe = self._request("GET", f"/api/v2/sync/recipe/{uid}/")
         return Recipe.from_api(recipe)
 
     def get_photos(self) -> list[Photo]:
         if not self._use_cache or self._photos is None:
-            photos = self._request("GET", "/api/v1/sync/photos")
+            photos = self._request("GET", "/api/v2/sync/photos/")
             self.photos = [Photo(**photo) for photo in photos]
         return self.photos
 
     def get_photo(self, uid: str) -> Photo:
-        photo = self._request("GET", f"/api/v1/sync/photo/{uid}")
+        photo = self._request("GET", f"/api/v2/sync/photo/{uid}/")
         return Photo(**photo)
 
     def get_categories(self) -> list[Category]:
-        categories = self._request("GET", "/api/v1/sync/categories")
+        categories = self._request("GET", "/api/v2/sync/categories/")
         return [Category(**category) for category in categories]
 
     def delete_photo(self, path: str) -> None:
@@ -285,15 +283,39 @@ class PaprikaAPIClient(PaprikaClient):
     _conn: HTTPSConnection | None = None
     _base_url: str = "www.paprikaapp.com"
     _request_lock_key: str = "paprika_request_lock"
+    _token_cache_key: str = "paprika_token"
+    _token_ttl: int = 3600
+    _login_endpoint: str = "/api/v1/account/login/"
+    _login_timeout: int = 60
 
-    @cached_property
-    def _headers(self):
+    def _fetch_token(self) -> str:
         email = Config.paprika.email
         password = Config.paprika.password
-        user_and_pass = b64encode(bytes(f"{email}:{password}", "utf-8")).decode(
-            "ascii"
+        response = requests.post(
+            urljoin(f"https://{self._base_url}", self._login_endpoint),
+            auth=(email, password),
+            data={"email": email, "password": password},
+            timeout=self._login_timeout,
         )
-        return {"Authorization": f"Basic {user_and_pass}"}
+        payload = response.json()
+        token = payload.get("result", {}).get("token")
+        if not token:
+            message = payload.get("error", {}).get("message", "unknown error")
+            raise ClientError(f"Paprika login failed: {message}")
+        return token
+
+    def _get_token(self, force_refresh: bool = False) -> str:
+        cache = cache_client()
+        if not force_refresh:
+            token = cache.get(key=self._token_cache_key)
+            if token:
+                return token
+        token = self._fetch_token()
+        cache.setex(key=self._token_cache_key, ttl=self._token_ttl, value=token)
+        return token
+
+    def _auth_headers(self, force_refresh: bool = False) -> dict:
+        return {"Authorization": f"Bearer {self._get_token(force_refresh)}"}
 
     def __enter__(self):
         self.connection = HTTPSConnection(self._base_url)
@@ -303,14 +325,24 @@ class PaprikaAPIClient(PaprikaClient):
         if self.connection:
             self.connection.close()
 
+    def _send(self, method, endpoint) -> dict:
+        self.connection.request(method, endpoint, headers=self._auth_headers())
+        result = json.loads(self.connection.getresponse().read())
+        if "error" in result:
+            self.connection.request(
+                method,
+                endpoint,
+                headers=self._auth_headers(force_refresh=True),
+            )
+            result = json.loads(self.connection.getresponse().read())
+        return result
+
     def _request(self, method, endpoint) -> dict:
         lock = cache_client()
         while lock.get(key=self._request_lock_key):
             time.sleep(Config.paprika.api_delay / 2)
 
-        self.connection.request(method, endpoint, headers=self._headers)
-        response = self.connection.getresponse().read()
-        result = json.loads(response)
+        result = self._send(method, endpoint)
 
         if (
             "error" in result

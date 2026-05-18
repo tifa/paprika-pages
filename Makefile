@@ -17,14 +17,15 @@ define usage
 	@grep -E "^[A-Za-z0-9_ -]*:.*#" $< | while read -r l; do printf "  $(FORMAT_BOLD_YELLOW)%-$(COL_WIDTH)s$(FORMAT_END)$$(echo $$l | cut -f2- -d'#')\n" $$(echo $$l | cut -f1 -d':'); done
 endef
 
-.git/hooks/pre-commit:
-	@test -d .git && $(ACTIVATE) pre-commit install && touch $@ || true
-
-venv: .git/hooks/pre-commit requirements-dev.txt requirements.txt
+venv: requirements-dev.txt requirements.txt
 	@test -d venv || python3 -m venv venv
 	@$(ACTIVATE) pip install uv
 	@$(ACTIVATE) uv pip install -Ur requirements-dev.txt
 	@touch $@
+	@$(MAKE) .git/hooks/pre-commit
+
+.git/hooks/pre-commit: venv
+	@test -d .git && $(ACTIVATE) pre-commit install && touch $@ || true
 
 .PHONY: help
 help: Makefile  # Print this message
