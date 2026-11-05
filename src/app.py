@@ -29,7 +29,7 @@ _BASE_DIR = Path(__file__).parent
 class MaintenanceMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if os.path.exists(MAINTENANCE_FILE):
-            return templates.TemplateResponse("503.html", {"request": request})
+            return templates.TemplateResponse(request, "503.html")
         return await call_next(request)
 
 
@@ -89,7 +89,7 @@ async def recipe(request: Request, slug: str):
             for recipe in Recipe.select().where(Recipe.slug == slug)
             if recipe.status == RecipeStatus.LISTED and not recipe.trashed
         ]
-        if len(recipe) > 1:
+        if len(recipe) != 1:
             raise Recipe.DoesNotExist
         else:
             recipe = recipe[0]
@@ -128,11 +128,12 @@ async def recipe(request: Request, slug: str):
                 )
     except Recipe.DoesNotExist:
         return templates.TemplateResponse(
-            "404.html", {"request": request, "response": response}
+            request, "404.html", {"response": response}, status_code=404
         )
     return templates.TemplateResponse(
+        request,
         "recipe.html",
-        {"request": request, "response": response, "page_title": recipe.name},
+        {"response": response, "page_title": recipe.name},
     )
 
 
@@ -151,10 +152,11 @@ async def index(request: Request, slug: str | None = None):
 
     if slug:
         category = Category.select().where(Category.slug == slug)
-        if category.count() > 1:
-            logger.warning("Multiple categories found with the same slug")
+        if category.count() != 1:
+            if category.count() > 1:
+                logger.warning("Multiple categories found with the same slug")
             return templates.TemplateResponse(
-                "404.html", {"request": request, "response": base()}
+                request, "404.html", {"response": base()}, status_code=404
             )
         else:
             category = category.get()
@@ -198,7 +200,7 @@ async def index(request: Request, slug: str | None = None):
             }
         )
     return templates.TemplateResponse(
-        "gallery.html", {"request": request, "response": response}
+        request, "gallery.html", {"response": response}
     )
 
 
