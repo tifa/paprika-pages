@@ -166,10 +166,10 @@ async def index(request: Request, slug: str | None = None):
     for recipe in recipes:
         if recipe.status not in [RecipeStatus.LISTED, RecipeStatus.SECRET]:
             continue
-        if set(Config.paprika.hidden_categories) & {
-            category.name for category in recipe.categories_list
-        }:
+        category_names = {category.name for category in recipe.categories_list}
+        if set(Config.paprika.hidden_categories) & category_names:
             continue
+        first = recipe.name.strip()[:1].upper()
         response["recipes"].append(
             {
                 "name": recipe.name,
@@ -177,6 +177,12 @@ async def index(request: Request, slug: str | None = None):
                 "rating": recipe.rating,
                 "photo_large": recipe.photo_large,
                 "secret": recipe.status == RecipeStatus.SECRET,
+                "categories": sorted(
+                    name
+                    for name in category_names
+                    if name in response["categories"]
+                ),
+                "letter": first if first.isascii() and first.isalpha() else "#",
             }
         )
     return templates.TemplateResponse(

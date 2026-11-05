@@ -1,229 +1,424 @@
+@import "_common";
+
 #recipe {
-    .heading {
-        padding-bottom: 2em;
-        text-align: center;
-        border-bottom: 2px solid #eee;
+  width: 100%;
+}
 
-        h2 {
-            margin: 0 1em .7em;
-            font-size: 2.5em;
-            text-transform: uppercase;
-        }
+// ------------------------------------------------------------------
+// Head: crumbs, title, at-a-glance facts
 
-        .subtitle {
-            font-size: .9em;
+.recipe-head {
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--ink);
+}
 
-            .date {
-                font-weight: bold;
-            }
-        }
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.5rem;
+  margin-bottom: 1.1rem;
+  font-size: 0.85rem;
+
+  > a:first-child {
+    color: var(--muted);
+    margin-right: 0.4rem;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  .chip {
+    @include eyebrow;
+    color: var(--accent);
+    padding: 0.4rem 0.6rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+
+    &:hover {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+  }
+}
+
+.recipe-head h1 {
+  font: 700 clamp(2.1rem, 5.5vw, 3.6rem)/1.05 $display;
+  font-variation-settings: "opsz" 144;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.dates {
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+
+  > div {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 0.6rem 0.9rem;
+    min-width: 7.5rem;
+  }
+
+  dt {
+    @include eyebrow;
+    font-size: 0.66rem;
+
+    i {
+      color: var(--accent);
+      margin-right: 0.15rem;
+    }
+  }
+
+  dd {
+    margin-top: 0.35rem;
+    font: 600 1.05rem/1.2 $display;
+  }
+
+  .stars {
+    font-size: 0.9rem;
+  }
+}
+
+// ------------------------------------------------------------------
+// Body: prep column (photo + ingredients) next to the method
+
+.recipe-body {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
+
+  h2 {
+    font: 700 1.5rem/1.2 $display;
+    letter-spacing: -0.01em;
+  }
+
+  .reset {
+    @include eyebrow;
+    color: var(--accent);
+  }
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 0.9rem;
+}
+
+// Prep column stays in view while you read the method.
+.prep {
+  position: sticky;
+  top: 9rem;
+  max-height: calc(100vh - 10rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding-right: 0.25rem;
+}
+
+.hero {
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--thumb);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 2rem;
+  margin-bottom: 1.75rem;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: zoom-in;
+  }
+}
+
+.ingredients {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.1rem 1.1rem 0.6rem;
+
+  // sub-headings come through as <p><strong>…</strong></p>
+  > p:not(.hint) {
+    @include eyebrow;
+    color: var(--accent);
+    margin: 1rem 0 0.4rem;
+  }
+
+  ul {
+    list-style: none;
+    margin-bottom: 0.6rem;
+  }
+
+  &:not(:has(.qty:not(:empty))) li {
+    grid-template-columns: minmax(0, 1fr);
+
+    .qty {
+      display: none;
+    }
+  }
+
+  li {
+    display: grid;
+    grid-template-columns: 4.5ch minmax(0, 1fr);
+    gap: 0.6rem;
+    align-items: baseline;
+    padding: 0.45rem 0.25rem;
+    border-bottom: 1px dashed var(--rule);
+    cursor: pointer;
+    border-radius: 4px;
+    @include transition(opacity);
+
+    &:last-child {
+      border-bottom: 0;
     }
 
-    .metadata {
-        font-size: .8em;
-        padding: 2em;
-        border-bottom: 2px solid #eee;
-        text-align: center;
-
-        i {
-            font-size: 2.5em;
-            display: inline-block;
-            color: #a4a4a4;
-        }
-
-        div {
-            text-align: left;
-            display: inline-block;
-            margin: 0 1em;
-
-            dt {
-                font-weight: bold;
-                font-size: .9em;
-                text-transform: uppercase;
-                color: #a5a5a5;
-            }
-        }
+    &:hover {
+      background: var(--paper);
     }
 
-    .columns {
-        margin: 2em 0;
-        display: flex;
-
-        .section {
-            h3 {
-                position: relative;
-                text-align: center;
-                font: 2em Lobster;
-                margin-bottom: 1em;
-            }
-
-            h3::after {
-                content: "";
-                position: absolute;
-                left: 0;
-                bottom: -.4em;
-                width: 100%;
-                background: #eee;
-                height: 1em;
-                z-index: -1;
-            }
-        }
-
-        .sidebar {
-            width: 250px;
-            flex-shrink: 0;
-
-            .thumbnail {
-                border-radius: 5px;
-                background: #eee;
-                overflow: hidden;
-                width: 100%;
-                display: block;
-                margin-bottom: 2em;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                img {
-                    max-width: 100%;
-                }
-
-                i {
-                    color: #fff;
-                    font-size: 3em;
-                    height: 150px;
-                    line-height: 150px;
-                }
-            }
-
-            h3 {
-                font-size: 1.5em;
-            }
-
-            p {
-                text-transform: uppercase;
-                margin-bottom: 1em;
-            }
-
-            ul {
-                list-style: none;
-                margin-bottom: 1.5em;
-
-                li {
-                    padding: .5em;
-                    border-bottom: 1px dashed #e4e4e4;
-                    display: flex;
-                    align-items: flex-start;
-                    gap: 0.75em;
-
-                    span {
-                        font-size: 1.5em;
-                        color: #6f6f6f;
-                        width: 4ch;
-                        text-align: right;
-                        flex-shrink: 0;
-                    }
-                }
-
-                li:last-child {
-                    border-bottom: none;
-                }
-
-                li:not(:has(span))::before {
-                    font-size: 1.5em;
-                    content: " ";
-                    display: inline-block;
-                    width: 4ch;
-                }
-            }
-        }
-
-        .content {
-            flex-grow: 1;
-            margin-left: 40px;
-            line-height: 2em;
-
-            .categories {
-                font-size: .9em;
-
-                i {
-                    margin-right: .5em;
-                }
-
-                ul {
-                    display: inline-block;
-                    margin-bottom: 1em;
-                }
-
-                li {
-                    display: inline-block;
-                    margin-right: .5em;
-                    text-transform: uppercase;
-                    flex-shrink: 0;
-                }
-            }
-
-            .description {
-                background-color: #e4e4e4;
-                font-style: italic;
-                padding: 2em;
-                border-radius: 5px;
-                margin-bottom: 2em;
-                display: flex;
-                align-items: flex-start;
-                gap: 0.75em;
-
-                i {
-                    flex-shrink: 0;
-                    color: #6f6f6f;
-                    font-size: 2em;
-                }
-            }
-
-            img {
-                max-width: 250px;
-                margin-right: 1em;
-                border-radius: 5px;
-            }
-
-            .section {
-                p {
-                    margin-bottom: 20px;
-                }
-
-                li {
-                    margin: 0 2em;
-                }
-            }
-        }
+    // quantities pulled out by render.ingredients()
+    .qty {
+      font: 500 0.95rem/1 $mono;
+      color: var(--accent);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
     }
+
+    &:has(> .qty:empty) .qty {
+      visibility: hidden;
+    }
+
+    &.done {
+      opacity: 0.4;
+      text-decoration: line-through;
+      text-decoration-thickness: 1.5px;
+    }
+  }
+}
+
+// ------------------------------------------------------------------
+// Method
+
+.method {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  font-size: 1.06rem;
+  line-height: 1.7;
+
+  img {
+    max-width: min(100%, 200px);
+    border-radius: 8px;
+    margin: 0.4rem 0.4rem 0 0;
+    vertical-align: top;
+    cursor: zoom-in;
+  }
+
+  section > p,
+  section > ul,
+  section > ol {
+    margin-bottom: 1rem;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.4rem;
+  }
+}
+
+.description {
+  font: italic 400 1.15rem/1.6 $display;
+  padding-left: 1.1rem;
+  border-left: 3px solid var(--accent);
+  color: var(--muted);
+}
+
+.steps {
+  counter-reset: step;
+
+  > p {
+    margin-bottom: 0.25rem;
+    padding: 0.55rem 0.9rem 0.55rem 3.4rem;
+    border-radius: 10px;
+    @include transition(background);
+  }
+
+  // photo rows that belong to the step above
+  > p:not(.step) {
+    margin-top: -0.4rem;
+    padding-top: 0;
+  }
+
+  > p.step {
+    position: relative;
+    padding-left: 3.4rem;
+    cursor: pointer;
+    counter-increment: step;
+
+    &::before {
+      content: counter(step);
+      position: absolute;
+      left: 0.8rem;
+      top: 0.5rem;
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font: 500 0.85rem/1 $mono;
+      border: 1.5px solid var(--rule);
+      color: var(--muted);
+      @include transition(background);
+    }
+
+    &:hover {
+      background: var(--card);
+    }
+
+    &.current {
+      background: var(--mark);
+
+      &::before {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+      }
+    }
+  }
+}
+
+.notes,
+.nutrition {
+  padding: 1.25rem 1.4rem 0.4rem;
+  border-radius: 12px;
+  border: 1px solid var(--rule);
+  font-size: 0.95rem;
+}
+
+.nutrition {
+  font: 500 0.88rem/1.7 $mono;
+}
+
+// ------------------------------------------------------------------
+// Responsive
+
+@media (max-width: $bp-wide) {
+  .recipe-body {
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+  }
+
+  .prep {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .hero {
+    max-height: 340px;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: $bp-narrow) {
+  .facts > div {
+    min-width: 0;
+    flex: 1 1 calc(50% - 0.6rem);
+  }
+
+  .steps > p {
+    padding-left: 3rem;
+  }
+
+  .steps > p.step {
+
+    &::before {
+      left: 0.55rem;
+    }
+  }
 }
 
 @media print {
-    #bar {
-        display: none;
+  .crumbs,
+  .hint,
+  .reset {
+    display: none !important;
+  }
+
+  .recipe-head {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+
+    h1 {
+      font-size: 22pt;
     }
+  }
 
-    #content{
-        top: 3em;
+  .facts > div {
+    padding: 0.3rem 0.6rem;
+  }
+
+  .recipe-body {
+    grid-template-columns: 200px 1fr;
+    gap: 1.5rem;
+  }
+
+  .prep {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .hero {
+    max-height: 140px;
+  }
+
+  .ingredients {
+    border: 0;
+    padding: 0;
+  }
+
+  .ingredients li.done {
+    opacity: 1;
+    text-decoration: none;
+  }
+
+  .steps > p.current {
+    background: none;
+  }
+
+  .method {
+    font-size: 10.5pt;
+    gap: 1rem;
+
+    img {
+      max-height: 90px;
     }
-
-    #recipe {
-        .heading {
-            h2 {
-                font-size: 2em;
-            }
-        }
-
-        .columns {
-            .sidebar {
-                width: 200px;
-                line-height: 1em;
-            }
-
-            .content img {
-                max-height: 100px;
-            }
-        }
-    }
+  }
 }

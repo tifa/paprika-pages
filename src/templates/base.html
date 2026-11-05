@@ -1,94 +1,70 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
-    <title>{{ page_title ~ ' | ' ~ response.title if page_title else response.title }}</title>
+    <title>{{ page_title ~ ' · ' ~ response.title if page_title else response.title }}</title>
 
     <meta charset="utf-8">
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="description" content="Recipe inventory">
     <meta name="pinterest" content="nopin">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
 
     <link rel="home" title="Home" href="/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Lobster&family=Open+Sans:ital,wght@0,400..800;1,300..800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     {% block styles %}{% endblock %}
 </head>
 
-<body>
-    <input type="checkbox" id="sandwich">
-    <label for="sandwich" class="sandwich">
-        <i class="fa fa-bars"></i>
-    </label>
+<body class="{% block body_class %}{% endblock %}">
+    <header class="masthead">
+        <div class="masthead-row">
+            <a class="brand" href="/">{{ response.title }}</a>
 
-    <div id="bar">
-        <div class="wrap">
-            <header>
-                <h1>
-                    <span>
-                        <a href="/">{{ response.title }}</a>
-                    </span>
-                </h1>
-            </header>
-            <nav class="menu">
-                <ul>
-                    {% if not self.subnav()|trim %}
-                    <li>
-                        <a href="#"><i class="fa fa-bars"></i></a>
-                        <ul>
-                            <li><a href="/">All</a></li>
-                            {% for category, slug in response.categories.items() %}
-                            <li>
-                                <a href="/c/{{ slug }}">{{ category }}</a>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    {% endif %}
-                    <li>
-                        <a href="mailto:{{ response.email }}"><i class="fa-regular fa-envelope"></i></a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/tifa/paprika-pages"><i class="fa-brands fa-github"></i></a>
-                    </li>
-                </ul>
+            <form class="search" action="/" method="get" role="search">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input id="search" type="search" name="q" autocomplete="off" spellcheck="false"
+                    placeholder="Find a recipe…" aria-label="Find a recipe"
+                    value="{{ request.query_params.get('q', '') }}">
+                <kbd class="search-hint" aria-hidden="true">/</kbd>
+            </form>
+
+            <nav class="links" aria-label="Contact">
+                <a href="mailto:{{ response.email }}" title="Email"><i class="fa-regular fa-envelope"></i></a>
+                <a href="https://github.com/tifa/paprika-pages" title="Source"><i class="fa-brands fa-github"></i></a>
             </nav>
         </div>
 
-        {% if self.subnav()|trim %}
-        <div class="subnav">
-            {% block subnav %}{% endblock %}
-        </div>
-        {% endif %}
-    </div>
+        <nav class="shelf" aria-label="Categories">
+            <ul>
+                <li><a href="/" class="{% if response.current_category_slug is defined and response.current_category_slug is none %}active{% endif %}">All</a></li>
+                {% for category, slug in response.categories.items() %}
+                <li><a href="/c/{{ slug }}" class="{% if response.current_category_slug == slug %}active{% endif %}">{{ category }}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </header>
 
-    <div id="content">
-        <article>
-            {% block content %}{% endblock %}
-        </article>
-        <footer>
-            <div>
-                &copy;
-            </div>
-        </footer>
-    </div>
+    <main id="content">
+        {% block content %}{% endblock %}
+    </main>
 
-    <div id="overlay"></div>
+    <footer class="colophon">
+        <a href="/">{{ response.title }}</a> &middot; recipes, indexed
+    </footer>
 
-    <div id="lightbox" class="lightbox">
-        <span class="lightbox-close">&times;</span>
-        <span class="lightbox-prev">&#10094;</span>
-        <span class="lightbox-next">&#10095;</span>
-        <img class="lightbox-content" id="lightbox-img">
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+        <button class="lightbox-close" aria-label="Close">&times;</button>
+        <button class="lightbox-prev" aria-label="Previous photo">&#10094;</button>
+        <button class="lightbox-next" aria-label="Next photo">&#10095;</button>
+        <img class="lightbox-content" id="lightbox-img" alt="">
     </div>
 
     <script src="https://kit.fontawesome.com/604b1fd259.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="/static/js/script.js"></script>
     {% block scripts %}{% endblock %}
 </body>

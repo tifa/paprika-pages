@@ -50,8 +50,14 @@ def ingredients(recipe_uid: int, content: str) -> str:
         elif line != "":
             if not processed_lines:
                 processed_lines.append("<ul>")
-            line = pattern.sub(r"<span>\1</span>", line)
-            processed_lines.append(f"<li>{line}</li>")
+            if match := pattern.match(line):
+                quantity, item = match.group(1), line[match.end() :]
+            else:
+                quantity, item = "", line
+            processed_lines.append(
+                f'<li><span class="qty">{quantity}</span>'
+                f'<span class="item">{item.strip()}</span></li>'
+            )
     if processed_lines:
         processed_lines.append("</ul>")
     return "\n".join(processed_lines)

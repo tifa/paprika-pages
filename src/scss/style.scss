@@ -1,322 +1,345 @@
-@use "sass:math";
 @import "_common";
 
-@keyframes fadein {
-  from {
-    opacity: 0;
-  }
+// ------------------------------------------------------------------
+// Theme
 
-  to {
-    opacity: 1;
+:root {
+  --paper: #f5efe3;
+  --card: #fffcf6;
+  --ink: #1d1914;
+  --muted: #6e6455;
+  --rule: #e0d5c1;
+  --accent: #b5410f;
+  --accent-ink: #fff;
+  --accent-soft: #f7dfcc;
+  --mark: #fbe7a1;
+  --thumb: #e9dfcd;
+  --shadow: 0 1px 2px rgb(60 40 20 / 0.06), 0 6px 20px -8px rgb(60 40 20 / 0.18);
+}
+
+@mixin dark-tokens {
+  --paper: #16130f;
+  --card: #201c16;
+  --ink: #f1eadd;
+  --muted: #a59a88;
+  --rule: #3a3229;
+  --accent: #f08a4b;
+  --accent-ink: #1b120b;
+  --accent-soft: #3b2518;
+  --mark: #4a3c12;
+  --thumb: #2c261e;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -10px rgb(0 0 0 / 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    @include dark-tokens;
   }
 }
 
-@-moz-keyframes fadein {
-
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+:root[data-theme="dark"] {
+  @include dark-tokens;
 }
 
-@-webkit-keyframes fadein {
+// ------------------------------------------------------------------
+// Base
 
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@-o-keyframes fadein {
-
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-$margin: 40px;
-
-* {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border: 0;
-  outline: 0;
+}
+
+html {
+  scroll-padding-top: 9rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  font: .9em/1.5em 'Open Sans', Arial, Helvetica, sans-serif;
-  color: #000;
-  font-weight: 300;
+  font: 400 1rem/1.55 $text;
+  color: var(--ink);
+  background: var(--paper);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  background: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.cover {
-  background: #000;
-}
-
-::selection,
-::-moz-selection {
-  background: #ffff00;
-  color: #333;
+::selection {
+  background: var(--mark);
+  color: var(--ink);
 }
 
 a {
-  text-decoration: none;
   color: inherit;
-}
-
-strong {
-  font-weight: bold;
+  text-decoration: none;
 }
 
 img {
   -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }
 
-input[type=number] {
-  -moz-appearance: textfield;
+:focus-visible {
+  @include focus-ring;
 }
 
-#sandwich,
-label[for='sandwich'] {
-  display: none;
+[hidden] {
+  display: none !important;
 }
 
-#bar {
-  font-weight: 400;
-  background: #fff;
-  position: fixed;
-  width: 100%;
-  z-index: 3;
-  color: #000;
+kbd {
+  font: 500 0.75rem/1 $mono;
+  padding: 0.2em 0.45em;
+  border: 1px solid var(--rule);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  color: var(--muted);
+}
 
-  .wrap {
+// ------------------------------------------------------------------
+// Masthead: brand · search · links, then the category shelf.
+
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.masthead-row {
+  max-width: $measure;
+  margin: 0 auto;
+  padding: 0.85rem 1.25rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.brand {
+  font: 800 1.9rem/1 $display;
+  font-variation-settings: "opsz" 144;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  flex-shrink: 0;
+
+  &::after {
+    content: ".";
+    color: var(--ink);
+  }
+}
+
+.search {
+  position: relative;
+  flex: 1;
+  max-width: 560px;
+
+  > i {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+  }
+
+  input {
     width: 100%;
-    display: table;
+    font: 500 1rem/1 $text;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.7rem 2.6rem 0.7rem 2.4rem;
+    @include transition(border-color);
+    -webkit-appearance: none;
 
-    header {
-      display: table-cell;
-      width: 25%;
-      padding-left: 25px;
-
-      h1 {
-        @include transition();
-        vertical-align: middle;
-        display: inline-block;
-        font: 2.7em/1em Lobster, Arial, Helvetica, sans-serif;
-        text-transform: lowercase;
-        margin: 25px;
-      }
+    &::placeholder {
+      color: var(--muted);
     }
 
-    nav.menu {
-      @include transition();
-      display: table-cell;
-      vertical-align: middle;
-      width: 75%;
-      text-align: right;
-      font-size: 1.2em;
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+  }
 
-      ul {
-        display: inline-block;
+  .search-hint {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
 
-        li {
-          display: inline-block;
-          text-transform: uppercase;
-          margin-right: 20px;
-        }
+  input:focus ~ .search-hint,
+  input:not(:placeholder-shown) ~ .search-hint {
+    display: none;
+  }
+}
 
-        li:last-child {
-          margin-right: 0;
-        }
-      }
+.links {
+  margin-left: auto;
+  display: flex;
+  gap: 0.25rem;
 
-      >ul {
-        margin-right: 3em;
+  a {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    color: var(--muted);
+    @include transition(background);
 
-        li ul {
-          display: none;
-        }
-
-        >li:hover {
-          position: relative;
-
-          i[class*="envelope"] {
-            color: #c71610;
-          }
-
-          i[class*="github"] {
-            color: #096bde;
-          }
-
-          ul {
-            display: block;
-            position: absolute;
-            top: 1.3em;
-            color: #fff;
-            font-size: .9em;
-            left: -300%;
-            padding-top: 10px;
-
-            li {
-              display: block;
-              margin: 0;
-              text-align: center;
-
-              a {
-                display: block;
-                padding: 6px 15px;
-                background: #222;
-              }
-            }
-
-            li:first-child a {
-              padding-top: 12px;
-            }
-
-            li:last-child a {
-              padding-bottom: 12px;
-            }
-
-            li:hover a {
-              color: #ccc;
-            }
-          }
-        }
-      }
+    &:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
     }
   }
 }
 
-.cover {
-  #bar .wrap header h1 {
-    border-bottom: 1px solid #555;
+.shelf {
+  max-width: $measure;
+  margin: 0 auto;
+  padding: 0 1.25rem 0.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 
-  #bar.light {
-    color: #fff;
+  ul {
+    list-style: none;
+    display: flex;
+    gap: 0.4rem;
+  }
 
-    .wrap header h1 {
-      border-bottom: 1px solid #ccc;
+  a {
+    display: block;
+    white-space: nowrap;
+    font: 500 0.88rem/1 $text;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--rule);
+    background: var(--card);
+    @include transition(background);
+
+    &:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    &.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper);
     }
   }
 }
 
-#bar.smaller .wrap {
-  h1 {
-    font-size: 1.6em;
-    margin: 15px 0;
-  }
-
-  nav {
-    font-size: 1em;
-  }
-}
+// ------------------------------------------------------------------
+// Page frame
 
 #content {
-  @include transition();
-  position: absolute;
-  top: 7em;
-  left: 2em;
-  right: 2em;
-  z-index: 2;
+  flex: 1;
+  width: 100%;
+  max-width: $measure;
+  margin: 0 auto;
+  padding: 1.75rem 1.25rem 3rem;
+}
 
-  a:hover {
-    background: #ffd700;
-  }
+.colophon {
+  text-align: center;
+  padding: 2rem 1rem 2.5rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.85rem;
 
-  footer div {
-    margin: 3em;
-    text-align: center;
-    color: #676767;
+  a {
+    font: 600 1rem $display;
+    color: var(--ink);
   }
 }
 
-#page-nav {
-  ul {
-    text-align: center;
-  }
+.stars {
+  white-space: nowrap;
+  color: #e0a422;
+  font-size: 0.75em;
+  letter-spacing: 0.05em;
 
-  li {
-    display: inline-block;
-    border-radius: 50%;
-    font: 4em/1em Raleway, Arial, Helvetica, sans-serif;
-
-    a:hover {
-      background: transparent;
-      color: #aaa;
-    }
-  }
-
-  .spacing {
-    margin-right: 100px;
+  .off {
+    color: var(--rule);
   }
 }
 
-@media screen and (max-width: 600px) {
+@media (max-width: $bp-narrow) {
+  html {
+    scroll-padding-top: 8.5rem;
+  }
 
-  #recipe {
-    .heading h2 {
-      font-size: 2em !important;
-      line-height: 1.2em;
+  .masthead-row {
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    padding: 0.7rem 1rem 0.5rem;
+  }
+
+  .brand {
+    font-size: 1.6rem;
+  }
+
+  .search {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+
+    .search-hint {
+      display: none;
     }
+  }
 
-    .columns {
-      display: block !important;
+  .shelf {
+    padding: 0 1rem 0.65rem;
+  }
 
-      .sidebar {
-        width: 100% !important;
-        text-align: center;
-
-        img {
-          display: inline-block;
-        }
-      }
-
-      .content {
-        margin-left: 0 !important;
-      }
-    }
+  #content {
+    padding: 1.25rem 1rem 2.5rem;
   }
 }
 
 @import "_lightbox";
 
-@import "_links";
-
-@import "_overlay";
-
 @media print {
-  #bar .wrap {
-    header h1 {
-      font-size: 1.5em;
-    }
+  .masthead,
+  .colophon {
+    display: none !important;
+  }
 
-    nav.menu {
-      display: none !important;
-    }
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  #content {
+    padding: 0;
+    max-width: none;
   }
 }

@@ -4,75 +4,111 @@
 <link rel="stylesheet" href="/static/css/gallery.css">
 {% endblock %}
 
-{% block scripts %}
-<script src="/static/js/masonry.pkgd.min.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var elem = document.querySelector('#gallery');
-        var masonryOptions = {
-            itemSelector: '.card',
-            columnWidth: '.card',
-            gutter: 10,
-            fitWidth: true,
-            columnWidth: 200,
-        };
-        var msnry = new Masonry(elem, masonryOptions);
+{% block body_class %}page-gallery{% endblock %}
 
-        // disable when printing
-        window.addEventListener('beforeprint', function() {
-            msnry.destroy();
-        });
-        window.addEventListener('afterprint', function() {
-            msnry = new Masonry(elem, masonryOptions);
-        });
-    });
-</script>
-{% endblock %}
+{% macro search_text(recipe) -%}
+{{ (recipe.name ~ ' ' ~ recipe.categories|join(' '))|lower }}
+{%- endmacro %}
 
-{% block subnav %}
-    <ul>
-        <li class="{% if response.current_category_slug is none %}active{% endif %}"><a href="/">All</a></li>
-        {% for category, slug in response.categories.items() %}
-        <li class="{% if response.current_category_slug == slug %}active{% endif %}">
-            <a href="/c/{{ slug }}">{{ category }}</a>
+{% macro stars(recipe) -%}
+{% if recipe.rating and recipe.rating > 0 %}
+<span class="stars" aria-label="{{ recipe.rating }} out of 5">
+    {%- for i in range(5) %}<i class="fa-solid fa-star{% if i >= recipe.rating %} off{% endif %}"></i>{% endfor -%}
+</span>
+{% endif %}
+{%- endmacro %}
+
+{% block content %}
+{% set current = response.categories | dictsort | selectattr('1', 'equalto', response.current_category_slug) | map(attribute='0') | first %}
+
+<div class="toolbar">
+    <h1 class="shelf-title">
+        {{ current or 'Every recipe' }}
+        <span class="count" id="count">{{ response.recipes|length }}</span>
+    </h1>
+    <div class="views" role="tablist" aria-label="View">
+        <button type="button" role="tab" data-view="photos" aria-selected="true">
+            <i class="fa-solid fa-table-cells-large" aria-hidden="true"></i> Photos
+        </button>
+        <button type="button" role="tab" data-view="index" aria-selected="false">
+            <i class="fa-solid fa-list" aria-hidden="true"></i> A–Z
+        </button>
+    </div>
+</div>
+
+<p class="empty" id="empty" hidden>
+    Nothing matches “<span id="empty-q"></span>”.
+    <button type="button" id="clear-search">Clear search</button>
+</p>
+
+{# ---------- A–Z index ---------- #}
+<section class="view view-index" data-view-panel="index" hidden>
+    {% set groups = response.recipes | sort(attribute='name') | groupby('letter') %}
+    <nav class="rail" aria-label="Jump to letter">
+        {% set present = groups | map(attribute='grouper') | list %}
+        {% for letter in '#ABCDEFGHIJKLMNOPQRSTUVWXYZ' %}
+            {% if letter in present %}
+            <a href="#letter-{{ 'num' if letter == '#' else letter }}" data-letter="{{ letter }}">{{ letter }}</a>
+            {% else %}
+            <span aria-hidden="true">{{ letter }}</span>
+            {% endif %}
+        {% endfor %}
+    </nav>
+
+    <div class="index">
+        {% for group in groups %}
+        <section class="letter-group" id="letter-{{ 'num' if group.grouper == '#' else group.grouper }}" data-letter="{{ group.grouper }}">
+            <h2 class="letter">{{ group.grouper }}</h2>
+            <ul>
+                {% for recipe in group.list | sort(attribute='name') %}
+                <li class="entry{% if recipe.secret %} secret{% endif %}" data-search="{{ search_text(recipe) }}">
+                    {% if not recipe.secret %}<a href="/r/{{ recipe.slug }}">{% else %}<div>{% endif %}
+                        <span class="thumb">
+                            {% if recipe.photo_large %}
+                            <img src="/static/images/{{ recipe.photo_large }}" alt="" loading="lazy">
+                            {% else %}
+                            <i class="fa-solid fa-utensils" aria-hidden="true"></i>
+                            {% endif %}
+                        </span>
+                        <span class="name">
+                            {{ recipe.name }}
+                            {% if recipe.secret %}<i class="fa-solid fa-lock" title="Private"></i>{% endif %}
+                        </span>
+                        <span class="leader" aria-hidden="true"></span>
+                        <span class="tags">{{ recipe.categories|join(' · ') }}</span>
+                        {{ stars(recipe) }}
+                    {% if not recipe.secret %}</a>{% else %}</div>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endfor %}
+    </div>
+</section>
+
+{# ---------- Photo grid (default; most recently updated first) ---------- #}
+<section class="view view-photos" data-view-panel="photos">
+    <p class="view-note">Most recently cooked or edited first</p>
+    <ul class="grid">
+        {% for recipe in response.recipes %}
+        <li class="tile{% if recipe.secret %} secret{% endif %}" data-search="{{ search_text(recipe) }}">
+            {% if not recipe.secret %}<a href="/r/{{ recipe.slug }}">{% else %}<div>{% endif %}
+                <span class="photo">
+                    {% if recipe.photo_large %}
+                    <img src="/static/images/{{ recipe.photo_large }}" alt="" loading="lazy">
+                    {% else %}
+                    <i class="fa-solid fa-utensils" aria-hidden="true"></i>
+                    {% endif %}
+                    {% if recipe.secret %}<i class="fa-solid fa-lock lock" title="Private"></i>{% endif %}
+                </span>
+                <span class="caption">
+                    <span class="name">{{ recipe.name }}</span>
+                    <span class="tags">{{ recipe.categories|join(' · ') }}</span>
+                    {{ stars(recipe) }}
+                </span>
+            {% if not recipe.secret %}</a>{% else %}</div>{% endif %}
         </li>
         {% endfor %}
     </ul>
-{% endblock %}
-
-{% block content %}
-<ul id="gallery">
-    {% for recipe in response.recipes %}
-    <li class="card{% if recipe.secret %} secret{% endif %}">
-        {% if not recipe.secret %}
-        <a href="/r/{{ recipe.slug }}/{{ recipe.hash }}">
-        {% endif %}
-            <div class="photo">
-                {% if recipe.photo_large %}
-                <img src="/static/images/{{ recipe.photo_large }}">
-                {% else %}
-                <i class="fa-solid fa-utensils"></i>
-                {% endif %}
-            </div>
-            <h3>{{ recipe.name }}{% if recipe.secret %} <i class="fa-solid fa-lock"></i>{% endif %}</h3>
-            <p class="rating">
-                {% if recipe.rating >= 0 %}
-                    {% for i in range(5) %}
-                        {% if i < recipe.rating %}
-                            <i class="filled fa-solid fa-star"></i>
-                        {% else %}
-                            <i class="empty fa-solid fa-star"></i>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            </p>
-            <p class="categories">
-                {{ recipe.categories_list }}
-            </p>
-        {% if not recipe.secret %}
-        </a>
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
+</section>
 {% endblock %}

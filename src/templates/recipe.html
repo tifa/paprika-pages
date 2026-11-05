@@ -4,121 +4,105 @@
 <link rel="stylesheet" href="/static/css/recipe.css">
 {% endblock %}
 
+{% block body_class %}page-recipe{% endblock %}
+
 {% block content %}
-<div id="recipe">
-    <div class="heading">
-        <h2>{{ response.recipe.name }}</h2>
-        <div class="subtitle">
-            Created on <span class="date">{{ response.recipe.created }}</span>
-            {% if response.recipe.created != response.recipe.time_updated %}
-            | Updated on <span class="date">{{ response.recipe.time_updated }}</span>
-            {% endif %}
-        </div>
-    </div>
-    {% if response.recipe.prep_time or response.recipe.cook_time or response.recipe.total_time or response.recipe.servings or response.recipe.rating or response.recipe.difficulty %}
-    <div class="metadata">
-        <dl>
-            {% if response.recipe.prep_time %}
+{% set r = response.recipe %}
+<article id="recipe">
+    <header class="recipe-head">
+        <p class="crumbs">
+            <a href="/"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All recipes</a>
+            {% for category in r.categories_list | sort(attribute='name') if category.name in response.categories %}
+            <a class="chip" href="/c/{{ response.categories[category.name] }}">{{ category.name }}</a>
+            {% endfor %}
+        </p>
+        <h1>{{ r.name }}</h1>
+        <p class="dates">
+            Added {{ r.created }}{% if r.created != r.time_updated %} · Updated {{ r.time_updated }}{% endif %}
+        </p>
+
+        {% set facts = [
+            ('Prep', r.prep_time, 'fa-regular fa-clock'),
+            ('Cook', r.cook_time, 'fa-solid fa-fire-burner'),
+            ('Total', r.total_time, 'fa-solid fa-hourglass-half'),
+            ('Serves', r.servings, 'fa-solid fa-utensils'),
+            ('Difficulty', r.difficulty, 'fa-solid fa-gauge'),
+        ] | selectattr('1') | list %}
+        {% if facts or r.rating %}
+        <dl class="facts">
+            {% for label, value, icon in facts %}
             <div>
-                <i class="fa fa-clock-o" aria-hidden="true"></i>
-                <div>
-                    <dt>Prep Time</dt>
-                    <dd>{{ response.recipe.prep_time }}</dd>
-                </div>
+                <dt><i class="{{ icon }}" aria-hidden="true"></i> {{ label }}</dt>
+                <dd>{{ value }}</dd>
             </div>
-            {% endif %}
-            {% if response.recipe.cook_time %}
+            {% endfor %}
+            {% if r.rating %}
             <div>
-                <i class="fa fa-fire" aria-hidden="true"></i>
-                <div>
-                    <dt>Cook Time</dt>
-                    <dd>{{ response.recipe.cook_time }}</dd>
-                </div>
-            </div>
-            {% endif %}
-            {% if response.recipe.total_time %}
-            <div>
-                <i class="fa fa-hourglass-half" aria-hidden="true"></i>
-                <div>
-                    <dt>Total Time</dt>
-                    <dd>{{ response.recipe.total_time }}</dd>
-                </div>
-            </div>
-            {% endif %}
-            {% if response.recipe.servings %}
-            <div>
-                <i class="fa fa-cutlery" aria-hidden="true"></i>
-                <div>
-                    <dt>Servings</dt>
-                    <dd>{{ response.recipe.servings }}</dd>
-                </div>
-            </div>
-            {% endif %}
-            {% if response.recipe.rating %}
-            <div>
-                <i class="fa fa-award" aria-hidden="true"></i>
-                <div>
-                    <dt>Rating</dt>
-                    <dd>{{ response.recipe.rating }}</dd>
-                </div>
-            </div>
-            {% endif %}
-            {% if response.recipe.difficulty %}
-            <div>
-                <i class="fa fa-tachometer" aria-hidden="true"></i>
-                <div>
-                    <dt>Difficulty</dt>
-                    <dd>{{ response.recipe.difficulty }}</dd>
-                </div>
+                <dt><i class="fa-solid fa-star" aria-hidden="true"></i> Rating</dt>
+                <dd class="stars" aria-label="{{ r.rating }} out of 5">
+                    {%- for i in range(5) %}<i class="fa-solid fa-star{% if i >= r.rating %} off{% endif %}"></i>{% endfor -%}
+                </dd>
             </div>
             {% endif %}
         </dl>
-    </div>
-    {% endif %}
-    <div class="columns">
-        <div class="sidebar">
-            <div class="thumbnail">
-                {% if response.recipe.photo_large %}
-                <img src="/static/images/{{ response.recipe.photo_large }}" alt="{{ response.recipe.name }}" class="lightbox-trigger" style="cursor: pointer;">
+        {% endif %}
+    </header>
+
+    <div class="recipe-body">
+        <aside class="prep">
+            <figure class="hero">
+                {% if r.photo_large %}
+                <img src="/static/images/{{ r.photo_large }}" alt="{{ r.name }}">
                 {% else %}
                 <i class="fa-solid fa-utensils" aria-hidden="true"></i>
                 {% endif %}
-            </div>
-            {% if response.recipe.ingredients %}
-            <div class="section ingredients">
-                <h3>Ingredients</h3>
-                <div>
-                    {{ response.recipe.ingredients|safe }}
+            </figure>
+
+            {% if r.ingredients %}
+            <section class="ingredients" aria-labelledby="ingredients-h">
+                <div class="section-head">
+                    <h2 id="ingredients-h">Ingredients</h2>
+                    <button type="button" class="reset" id="reset-ingredients" hidden>Reset</button>
                 </div>
-            </div>
+                <p class="hint">Tap an ingredient to check it off.</p>
+                {{ r.ingredients|safe }}
+            </section>
             {% endif %}
-        </div>
-        <div class="content">
-            {% if response.recipe.directions %}
-            <div class="section">
-                <h3>Directions</h3>
-                {{ response.recipe.directions|safe }}
-            </div>
+        </aside>
+
+        <div class="method">
+            {% if r.description %}
+            <section class="description">
+                {{ r.description|safe }}
+            </section>
             {% endif %}
 
-            {% if response.recipe.nutritional_info %}
-            <div class="section">
-                <h3>Nutritional Info</h3>
-                <div>
-                    {{ response.recipe.nutritional_info|safe }}
+            {% if r.directions %}
+            <section class="directions" aria-labelledby="directions-h">
+                <div class="section-head">
+                    <h2 id="directions-h">Method</h2>
                 </div>
-            </div>
+                <p class="hint">Tap a step to keep your place.</p>
+                <div class="steps">
+                    {{ r.directions|safe }}
+                </div>
+            </section>
             {% endif %}
 
-            {% if response.recipe.notes %}
-            <div class="section">
-                <h3>Notes</h3>
-                <div>
-                    {{ response.recipe.notes|safe }}
-                </div>
-            </div>
+            {% if r.notes %}
+            <section class="notes">
+                <div class="section-head"><h2>Notes</h2></div>
+                {{ r.notes|safe }}
+            </section>
+            {% endif %}
+
+            {% if r.nutritional_info %}
+            <section class="nutrition">
+                <div class="section-head"><h2>Nutrition</h2></div>
+                {{ r.nutritional_info|safe }}
+            </section>
             {% endif %}
         </div>
     </div>
-</div>
+</article>
 {% endblock %}
