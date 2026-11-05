@@ -64,10 +64,9 @@
   margin-top: 1.4rem;
 
   > div {
-    background: var(--card);
-    border: 1px solid var(--rule);
+    background: var(--fill);
     border-radius: 10px;
-    padding: 0.6rem 0.9rem;
+    padding: 0.65rem 0.95rem;
     min-width: 7.5rem;
   }
 
@@ -157,7 +156,6 @@
 
 .ingredients {
   background: var(--card);
-  border: 1px solid var(--rule);
   border-radius: 12px;
   padding: 1.1rem 1.1rem 0.6rem;
 
@@ -291,7 +289,7 @@
       display: grid;
       place-items: center;
       font: 500 0.85rem/1 $mono;
-      border: 1.5px solid var(--rule);
+      background: var(--fill);
       color: var(--muted);
       @include transition(background);
     }
@@ -305,7 +303,6 @@
 
       &::before {
         background: var(--accent);
-        border-color: var(--accent);
         color: var(--accent-ink);
       }
     }
@@ -316,7 +313,7 @@
 .nutrition {
   padding: 1.25rem 1.4rem 0.4rem;
   border-radius: 12px;
-  border: 1px solid var(--rule);
+  background: var(--card);
   font-size: 0.95rem;
 }
 

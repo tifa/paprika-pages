@@ -1,9 +1,10 @@
 @import "_common";
 
 // ------------------------------------------------------------------
-// Theme
+// Theme (Paprika). Follows the system light/dark setting, which
+// <html data-theme="light|dark"> can override.
 
-:root {
+@mixin paprika-light {
   --paper: #f5efe3;
   --card: #fffcf6;
   --ink: #1d1914;
@@ -14,10 +15,13 @@
   --accent-soft: #f7dfcc;
   --mark: #fbe7a1;
   --thumb: #e9dfcd;
+  --fill: #ece3d3;
+  --fill-strong: #e3d7c3;
+  --img-shadow: 0 1px 1px rgb(70 45 20 / 0.14), 0 3px 6px -1px rgb(70 45 20 / 0.24);
   --shadow: 0 1px 2px rgb(60 40 20 / 0.06), 0 6px 20px -8px rgb(60 40 20 / 0.18);
 }
 
-@mixin dark-tokens {
+@mixin paprika-dark {
   --paper: #16130f;
   --card: #201c16;
   --ink: #f1eadd;
@@ -28,17 +32,28 @@
   --accent-soft: #3b2518;
   --mark: #4a3c12;
   --thumb: #2c261e;
+  --fill: #27211a;
+  --fill-strong: #322a21;
+  --img-shadow: 0 1px 1px rgb(0 0 0 / 0.4), 0 3px 6px -1px rgb(0 0 0 / 0.6);
   --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -10px rgb(0 0 0 / 0.6);
+}
+
+:root {
+  --font-display: "Fraunces", Georgia, "Songti TC", "Noto Serif TC", serif;
+  --font-text: "Inter", system-ui, -apple-system, "PingFang TC", "Noto Sans TC", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  @include paprika-light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    @include dark-tokens;
+    @include paprika-dark;
   }
 }
 
 :root[data-theme="dark"] {
-  @include dark-tokens;
+  @include paprika-dark;
 }
 
 // ------------------------------------------------------------------
@@ -101,10 +116,9 @@ button {
 
 kbd {
   font: 500 0.75rem/1 $mono;
-  padding: 0.2em 0.45em;
-  border: 1px solid var(--rule);
-  border-bottom-width: 2px;
-  border-radius: 4px;
+  padding: 0.25em 0.5em;
+  background: var(--fill-strong);
+  border-radius: 5px;
   color: var(--muted);
 }
 
@@ -162,11 +176,11 @@ kbd {
     width: 100%;
     font: 500 1rem/1 $text;
     color: var(--ink);
-    background: var(--card);
-    border: 1px solid var(--rule);
+    background: var(--fill);
+    border: 0;
     border-radius: 999px;
-    padding: 0.7rem 2.6rem 0.7rem 2.4rem;
-    @include transition(border-color);
+    padding: 0.75rem 2.6rem 0.75rem 2.4rem;
+    @include transition(background);
     -webkit-appearance: none;
 
     &::placeholder {
@@ -175,7 +189,7 @@ kbd {
 
     &:focus {
       outline: none;
-      border-color: var(--accent);
+      background: var(--card);
       box-shadow: 0 0 0 3px var(--accent-soft);
     }
   }
@@ -238,19 +252,18 @@ kbd {
     font: 500 0.88rem/1 $text;
     padding: 0.5rem 0.9rem;
     border-radius: 999px;
-    border: 1px solid var(--rule);
-    background: var(--card);
+    color: var(--muted);
     @include transition(background);
 
     &:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+      background: var(--fill);
+      color: var(--ink);
     }
 
     &.active {
-      background: var(--ink);
-      border-color: var(--ink);
-      color: var(--paper);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
     }
   }
 }
@@ -330,6 +343,10 @@ kbd {
   .masthead,
   .colophon {
     display: none !important;
+  }
+
+  * {
+    box-shadow: none !important;
   }
 
   body {

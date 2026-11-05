@@ -16,7 +16,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     {% block styles %}{% endblock %}
 </head>
 
@@ -65,7 +65,7 @@
     </div>
 
     <script src="https://kit.fontawesome.com/604b1fd259.js" crossorigin="anonymous"></script>
-    <script src="/static/js/script.js"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>
 

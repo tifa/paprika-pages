@@ -1,8 +1,10 @@
 // Design tokens + shared mixins. Imported by every page stylesheet.
 
-$display: "Fraunces", Georgia, "Songti TC", "Noto Serif TC", serif;
-$text: "Inter", system-ui, -apple-system, "PingFang TC", "Noto Sans TC", sans-serif;
-$mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+// Font stacks live in CSS custom properties (defined on :root in style.scss)
+// so a theme can swap them without recompiling.
+$display: var(--font-display);
+$text: var(--font-text);
+$mono: var(--font-mono);
 
 $measure: 1180px;
 $bp-wide: 900px;

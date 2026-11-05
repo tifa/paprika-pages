@@ -39,6 +39,18 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=_BASE_DIR / "templates")
 
 
+def asset(path: str) -> str:
+    """URL for a static CSS/JS file, stamped with its mtime to bust caches."""
+    try:
+        version = int((STATIC_DIR / path).stat().st_mtime)
+    except OSError:
+        return f"/static/{path}"
+    return f"/static/{path}?v={version}"
+
+
+templates.env.globals["asset"] = asset
+
+
 def base():
     return {
         "title": Config.title,
